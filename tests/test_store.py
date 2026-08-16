@@ -3,6 +3,7 @@ from datetime import datetime
 import pytest
 
 from gridwatch.models import Notice
+from gridwatch.parse import HARARE
 from gridwatch.store import NoticeStore
 
 
@@ -10,8 +11,8 @@ def make(area: str, hour: int = 5) -> Notice:
     return Notice(
         area=area,
         area_normalised=area.lower(),
-        starts_at=datetime(2026, 8, 14, hour, 0),
-        ends_at=datetime(2026, 8, 14, hour + 4, 0),
+        starts_at=datetime(2026, 8, 14, hour, 0, tzinfo=HARARE),
+        ends_at=datetime(2026, 8, 14, hour + 4, 0, tzinfo=HARARE),
         published_at=None,
         source_id="test",
         source_url="https://example.invalid",

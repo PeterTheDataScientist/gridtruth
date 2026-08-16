@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from gridwatch.fetch import visible_text
-from gridwatch.parse import normalise_area, parse_notices
+from gridwatch.parse import HARARE, normalise_area, parse_notices
 
 FIXTURE = Path(__file__).parent / "fixtures" / "notice_sample.html"
 
@@ -17,7 +17,7 @@ def result():
         source_id="test",
         source_url="https://example.invalid/notice",
         snapshot_sha256="deadbeef",
-        fallback_date=datetime(2026, 8, 14),
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
     )
 
 
@@ -58,7 +58,7 @@ def test_record_id_is_stable_and_content_addressed(result):
         source_id="test",
         source_url="https://example.invalid/notice",
         snapshot_sha256="deadbeef",
-        fallback_date=datetime(2026, 8, 14),
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
     )
     assert [n.record_id for n in first.notices] == [n.record_id for n in result.notices]
 
@@ -70,14 +70,14 @@ def test_record_id_ignores_volatile_fields():
         source_id="test",
         source_url="https://example.invalid/notice",
         snapshot_sha256="aaaa",
-        fallback_date=datetime(2026, 8, 14),
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
     )
     b = parse_notices(
         visible_text(FIXTURE.read_bytes()),
         source_id="test",
         source_url="https://example.invalid/notice",
         snapshot_sha256="bbbb",
-        fallback_date=datetime(2026, 8, 14),
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
     )
     assert {n.record_id for n in a.notices} == {n.record_id for n in b.notices}
 
