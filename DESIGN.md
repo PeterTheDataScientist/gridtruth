@@ -2,73 +2,75 @@
 
 ## The question
 
-Zimbabwe's utility publishes load shedding notices. Nobody knows how closely reality follows them. That gap is the whole project: not "when is the power going off" but "does the announcement mean anything".
+Is this place darker than it normally is?
 
-Answering it needs three independent signals, and their disagreement is the product.
+Not "how bright is it" and never "is it brighter than that other place". Absolute night-time brightness across Africa is mostly a map of population density and wealth. It would look authoritative and tell you nothing about electricity.
 
-| Signal | Source | What it tells you | How it fails |
-|---|---|---|---|
-| Announced | ZETDC notices | What was promised | Published irregularly, format changes, can be withdrawn |
-| Reported | Crowdsourced | What people experienced | Sparse, self-selected, poisonable |
-| Observed | NASA Black Marble night lights | What a satellite saw | Coarse, cloud-blocked, moon-sensitive |
+## Why satellite rather than utilities
 
-No single one is trustworthy. Two agreeing against the third is informative. That is the design.
+Utilities across Africa publish little, publish inconsistently, or publish nothing. Zimbabwe's ZETDC states in its own FAQ that load "will be done outside the programme without notice", and then publishes no programme. An accountability project built on utility disclosure inherits every gap in that disclosure.
+
+The VIIRS Day-Night Band has imaged every square kilometre of Africa every night since January 2012 at 500 m. One instrument, one calibration, no permission required, no country able to opt out. That property, not the imagery itself, is why this is the right basis for a continental record.
+
+## The measurement unit is the city's lit footprint
+
+This is the core decision and it was forced by a bug.
+
+The first version took the median radiance of a fixed 0.3 degree box centred on each city. Cape Town returned 3.6 nW/cm2/sr against Johannesburg's 19.1, implying it was five times dimmer. It is not. Cape Town's box is 27 percent ocean and mountain, so more than a quarter of its pixels sit near zero and the median lands in the dark half. Cape Town's 90th percentile is 28.6 against Johannesburg's 33.4.
+
+The box was measuring coastline.
+
+So the unit became the city's own lit footprint, derived from its own data:
+
+1. Stack every observation of that city's box.
+2. Take the **90th percentile per pixel** across nights. That is each pixel's normal lit level. The 90th rather than the max, so one anomalous flare cannot define normal.
+3. Keep pixels whose normal level clears `max(1.0 nW/cm2/sr, 15% of the city's own 99th percentile)`. An absolute floor excludes genuinely unlit ground; the relative term means a dim city's core still counts as its core.
+4. Every night, compare each lit pixel to **its own** normal level.
+
+Coastal cities, cities against escarpments, and cities with large rural fringes are all corrected by the same mechanism, because the mask comes from the data rather than from a hand-drawn boundary.
+
+## The two published numbers
+
+**`dark_share`** — the fraction of the city's lit footprint that fell below half its own normal level on a given night. This is the headline because it is legible: *what share of the normally-lit city was dark*.
+
+**`lit_share`** — the mean ratio of observed to normal across the footprint, clipped at 1. A smoother measure that catches partial dimming rather than only the pixels crossing a threshold.
+
+Both are bounded, both are relative to that city alone, and neither can be inflated by a city simply being large or rich.
+
+## What can break the signal
+
+Written before results exist, because the failure modes decide whether any number here survives review.
+
+**Moon.** The archive product is not lunar-corrected, and full-moon nights raise apparent radiance across the whole scene. Handled two ways: observations are sampled near new moon (within roughly two days), and the computed lunar phase is stored on every observation so the effect is auditable rather than assumed away. The NASA VNP46A2 product is lunar-corrected and is the upgrade path.
+
+**Cloud.** Cloud removes pixels and, worse, thin cloud dims them without removing them. Observations below 60 percent footprint coverage are discarded outright. This does not solve thin cloud, which is the single largest remaining source of false dimming, and the honest position is that a low single-night reading is more likely weather than a blackout.
+
+**Baseline contamination.** If a city is shed most nights, its "normal" already includes outages and the departure shrinks. Using a 90th-percentile envelope rather than a mean is a partial defence, since it anchors on the brighter tail. It is not a complete one, and the sensitivity of every headline number to the envelope percentile has to be reported.
+
+**Generators and solar.** Backup generation dims less during an outage and tracks wealth. This systematically under-detects outages in richer areas and richer cities. It is a bias with a socioeconomic gradient and it is stated wherever results are published, not buried.
+
+**Growth versus dimming.** A city that electrifies new suburbs raises its own envelope, which mechanically lowers historical `lit_share`. Long time series need the envelope computed on a rolling window rather than the full history. Not yet implemented; the current build uses a single envelope across all observations, which is acceptable over three years and would not be over ten.
 
 ## Architecture
 
 ```
-GitHub Actions (cron)
-  └─ fetch      → content-addressed snapshot in data/raw/
-     └─ parse   → Notice records
-        └─ store → append-only JSONL, dedup by content hash
-                     ↓
-Night-lights job (separate schedule, NASA Earthdata)
-  └─ VNP46A2 daily granule → per-area radiance → Observation records
-                     ↓
-              derived index (monthly, per suburb)
-                     ↓
-        Cloudflare Worker API → Cloudflare Pages front end
+GitHub Actions (scheduled)
+  └─ pipeline/extract.py    windowed COG reads from s3://globalnightlight
+     │                      no credentials, ~250 KB per city-night
+     └─ pixels.npz          checkpointed per night, resumable
+        └─ pipeline/aggregate.py   envelope, footprint mask, per-night stats
+           └─ data/places.json     small, committed, CC BY
+              └─ docs/index.html   static dashboard, reads the JSON directly
 ```
 
-Everything before the API runs on GitHub Actions, which is free and unlimited on public repositories. There is no server to pay for and nothing to remember to renew.
+Everything before the dashboard runs on GitHub Actions, free and unlimited on public repositories. The dashboard is a single static file with no framework and no build step, so it loads on a cheap phone over mobile data and there is nothing to wake up.
 
 ## Decisions, and what was rejected
 
-**The dataset is JSONL in git, not a database.** Git history is the provenance record, every change is diffable, cloning gets you the whole archive with no credentials, and it costs nothing. Rejected: Postgres on a free tier, because free Postgres tiers pause on inactivity or expire (Render's free database is deleted 30 days after creation), and a dataset that can silently vanish is not a dataset. Migration threshold: when `data/processed/` exceeds roughly 200 MB or a single file exceeds 50 MB, raw snapshots move to object storage and the repo keeps only the processed records.
+**The open World Bank archive over NASA's product.** `s3://globalnightlight` needs no account at all, which means anyone can reproduce this from a clean machine. The cost is a roughly four month publication lag and no lunar or cloud correction. NASA VNP46A2 is scientifically cleaner and has a two-day lag, but requires an Earthdata login. Both are supported; the zero-auth path is the default so reproduction has no barrier.
 
-**Records are content-addressed.** A record's id is a hash of area, start, end and source. Re-running ingestion cannot duplicate rows, so the schedule can be aggressive without corrupting the archive, and a re-fetch that changes the snapshot hash does not create phantom records. This is tested, not assumed.
+**Google Earth Engine rejected outright** despite being the obvious tool. Its free tier forbids commercial use, fee-for-service work and operational services, which conflicts with the Apache 2.0 and CC BY licensing this project commits to.
 
-**The parser fails loudly and partially.** Anything that looks like a notice but cannot be read is returned in `unparsed` and counted in the run report. A run that produces zero notices because the page changed is then distinguishable from a run that produced zero because there were none. Rejected: a strict parser that raises on unexpected input, because one format change would stop collection entirely, and the archive is the asset.
+**Real time rejected as a goal.** Nothing available gives less than a two-day lag. Reliability is a track-record question, so the lag costs nothing, and promising real time would be an overclaim that invites dismissal of everything else.
 
-**Areas are normalised conservatively.** Known spelling variants collapse (Mt / Mount). Fuzzy matching does not happen. A wrong join silently corrupts a suburb's history; a missed join is visible and fixable later.
-
-**Raw bytes are kept forever.** Reparsing the entire history after a parser fix has to be possible. Snapshots are content-addressed so an unchanged page costs nothing to keep.
-
-## What can break the verification signal
-
-Written up front because these determine whether the central claim survives.
-
-**Spatial resolution.** VNP46A2 is roughly 500 m per pixel. Small suburbs are a handful of pixels. Per-suburb per-night verdicts are not defensible; suburb-month aggregates are. The repository reports observations nightly and confidence only monthly.
-
-**Cloud.** The rainy season removes whole weeks. The product ships a mandatory quality flag per pixel per night; flagged pixels are excluded rather than imputed, and the excluded fraction is reported alongside every index value.
-
-**Moon.** Lunar illumination changes background radiance by more than the effect being measured. VNP46A2 is already lunar-BRDF corrected, which handles the bulk of it. Residual lunar sensitivity is checked by regressing residuals on lunar phase and reporting the coefficient.
-
-**Baseline contamination.** This is the hardest one. If a suburb is shed most nights, a rolling-mean baseline is itself a shed baseline and the departure vanishes. The baseline is therefore built from nights the schedule says the area was not shed, using an upper envelope of comparable nights rather than a mean. That is an assumption, so its effect gets an ablation and every headline number carries its sensitivity to the baseline definition.
-
-**Generators and other light sources.** A suburb with widespread generator or solar backup dims less. This biases toward under-detecting outages in wealthier areas, which is a systematic bias with a socioeconomic gradient and must be stated wherever results are published, not buried.
-
-**No ground truth in Zimbabwe.** Which is why the method is calibrated in South Africa first, where the utility's own published stage history provides a large labelled set, and only then applied here. Error rates are measured where labels exist and carried across with that caveat attached.
-
-## Refresh loop
-
-The project is designed to keep working with no attention.
-
-- Ingestion runs on a GitHub Actions schedule. Public repo, so the minutes are free and unlimited.
-- A heartbeat ping fires on every successful run. A missed heartbeat raises an alert, so a silently dead cron becomes a loud one.
-- Scheduled workflows are disabled by GitHub after 60 days of repository inactivity, so a separate monthly job commits a timestamp to keep the repo active. This is a real failure mode that kills many scheduled scrapers quietly.
-- Cron fires at an odd minute rather than on the hour, because scheduled runs at the top of the hour are queued and can drift by half an hour or more.
-
-## Privacy
-
-Crowdsourced reports store an area and a timestamp. No account, no phone number, no precise location, no device identifier. The published dataset contains no personal data of any kind, which is both the right default and the thing that makes the CC BY release possible without qualification.
+**Pixels stored, not summary statistics.** The first pipeline stored medians and had to be re-run from scratch when the method changed. Keeping arrays means a method change is a re-aggregation, not a re-download.

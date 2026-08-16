@@ -1,58 +1,55 @@
 # What did not work
 
-An honest log. Added to as things break, not written retrospectively once everything works.
+An honest log, added to as things break rather than written retrospectively once everything works.
 
 ---
 
 ## Line-based parsing assumed the area and its time were on the same line
 
-**What was tried.** The first parser read each line of the page's visible text and expected an area name and a time range together, as they appear in a written sentence ("Borrowdale 0900-1300").
+**What was tried.** The first parser read each line of a page's visible text and expected an area name and a time range together, as they appear in a written sentence.
 
-**What happened.** Every notice in a table produced zero records. HTML tables flatten to one cell per line, so the parser saw a bare area name (no time, skipped) followed by a bare time range (no area, discarded). On the test fixture it found 5 possible notices and parsed 0 of them.
+**What happened.** Every notice in a table produced zero records. HTML tables flatten to one cell per line, so the parser saw a bare area name (no time, skipped) then a bare time range (no area, discarded). On the test fixture it found 5 candidate notices and parsed 0.
 
-**Why it matters.** It would have failed silently in production. The run would have reported "0 new records" and looked like a quiet day rather than a broken parser. The only reason it was caught before launch is that the fixture test asserted specific expected areas rather than just "some notices were found".
+**Why it matters.** It would have failed silently in production, reporting "0 new records" and looking like a quiet day rather than a broken parser. It was caught only because the fixture test asserted specific expected areas rather than "some notices were found".
 
-**The fix.** The parser now carries a candidate area forward from the previous line and pairs it with a following time-only line, guarded by a plausibility check so boilerplate cannot become an area name. The check is deliberately conservative: a missed notice shows up in `unparsed` and is fixable, a garbage record in the public dataset is not.
-
-**The lesson, which generalises.** Assert on content, never on counts. A test that checks "more than zero notices were parsed" would have passed against a parser that was inventing them.
+**The lesson.** Assert on content, never on counts. A test checking "more than zero" would have passed against a parser inventing them.
 
 ---
 
 ## Lint passed locally and failed on CI, and the thing it caught was real
 
-**What was tried.** `ruff>=0.6` in the dev extras, relying on ruff's default rule selection.
+**What happened.** `ruff` passed locally and failed on the first CI run with 8 errors. The two environments resolved different versions and the newer one's defaults included rules the older one did not.
 
-**What happened.** `ruff check src tests` passed locally and failed on the first CI run with 8 errors. The two environments had resolved different ruff versions, and the newer one's defaults included rules the older one did not.
+**Why it matters, and it is not the lint.** The rule was DTZ001, naive `datetime` construction. Notices are published in Harare local time; satellite granules are in UTC. A naive datetime makes that join silently wrong by two hours: an outage announced for 22:00 local compared against the 22:00 UTC pass, which is midnight local. It would still produce a number, and the number would be nonsense.
 
-**Why it matters, and it is not the lint.** The rule that fired was DTZ001, naive `datetime` construction. That is a real defect in this project specifically. Load shedding notices are published in Harare local time. NASA Black Marble granules are in UTC. Every verification join in this codebase crosses those two clocks, and a naive datetime makes that join silently wrong by two hours: an outage announced for 22:00 local would be compared against the satellite pass for 22:00 UTC, which is midnight local. The comparison would still produce a number, and the number would be nonsense.
-
-**The fix, in two parts.**
-
-1. The project is now timezone-aware end to end. `HARARE` is defined once, notice times are parsed as Harare local, and a naive `fallback_date` is coerced rather than accepted. Records serialise with an explicit offset (`2026-08-14T22:00:00+02:00`).
-2. The ruff version is pinned and the rule set is named explicitly in `pyproject.toml` rather than inherited from whatever defaults the resolved version happens to ship. DTZ is in that set on purpose, with a comment saying why.
-
-**The lesson.** An unpinned linter is a linter whose behaviour is decided by the release calendar. But the CI failure was still worth having: a stricter environment than the local one found a genuine bug on the first run, before a single real record had been written. Do not treat a red CI as noise to be silenced.
-
+**The fix.** Timezone-aware end to end, ruff pinned, and the rule set named explicitly rather than inherited from whatever version resolves.
 
 ---
 
 ## The first live run produced exactly one record, and it was a sentence about geysers
 
-**What was tried.** Point the parser at the three ZETDC pages and see what comes back.
+**What happened.** Two ZETDC pages produced nothing. The load shedding FAQ produced one "notice": area `"Why are bills not going down despite all the shedding?"`, window 12:00 to 22:00. The source line was a paragraph explaining that a geyser "contributes about 60-70% of the total bill". The regex matched `60-70` and `% 24` wrapped it into a plausible outage window.
 
-**What happened.** Two pages produced nothing. The load shedding FAQ produced one notice:
+**The fix.** A validation pass between matching and accepting: a bare number range is only a time if it carries a colon, an am/pm marker, or the 4-digit HHMM form. Percentages rejected. Written hours above 23 rejected before wrapping. The real paragraph is now a regression test.
 
-> area: "Why are bills not going down despite all the shedding?"
-> window: 2026-08-16 12:00 to 22:00 (+02:00)
+**The second finding, which mattered more.** With the false positive gone the live run returned zero notices from all three sources, and link mining confirmed why: ZETDC publishes no load shedding schedule anywhere on its website. The premise the project was built on was false.
 
-The source line was a paragraph explaining that a geyser "contributes about 60-70% of the total bill". The time-range regex matched `60-70`, and `_to_time` wrapped it with `% 24` into a perfectly plausible 12:00 to 22:00 outage window. Nothing in the record looked malformed. It would have gone into a public dataset and stayed there.
+**The lesson.** Test against the real source before building on an assumption about it. The synthetic fixture proved the parser worked. Only the live run proved there was nothing to parse.
 
-**Why it happened.** The regex was written to be permissive so that unusual real formats would still match, and there was no validation step behind it. `page 3-4`, `sections 1-2` and any percentage range would all have produced outages.
+---
 
-**The fix.** A validation pass between matching and accepting. A bare small-number range is only a time if it says so: a colon or full stop, an am/pm marker, or the 4-digit HHMM form utility notices use. A range followed by `%` is rejected outright. Written hours above 23 and minutes above 59 are rejected before wrapping, not after. The real FAQ paragraph is now a regression test, verbatim.
+## The measurement box was measuring coastline
 
-**The second finding, which matters more than the bug.** With the false positive gone, the live run returns **zero notices from all three sources**, and mining the page links confirms why: ZETDC publishes no load shedding schedule anywhere on its website. The premise the project was built on, "the utility publishes notices we can archive", is false.
+**What was tried.** Per city, take the median radiance of a fixed 0.3 degree box around the centre. Simple, uniform, defensible-sounding.
 
-That is not a reason to stop. It reframes the work. An archive of announcements nobody makes is worthless, but a continuous public record showing that no schedule is published, alongside satellite observation of the cuts that happen regardless, is a stronger artefact than the original plan. The monitoring log became the primary dataset and the public page leads with the absence rather than hiding it.
+**What happened.** Cape Town read **3.6** nW/cm2/sr against Johannesburg's **19.1**, which says Cape Town is five times dimmer than Johannesburg. That is obviously false, and it was the number the first published dashboard was built on.
 
-**The lesson.** Test against the real source early, before building anything on top of an assumption about it. A synthetic fixture proved the parser worked. Only the live run proved there was nothing to parse.
+The cause: 27 percent of Cape Town's box is ocean and mountain, sitting near zero. With more than a quarter of pixels dark, the **median lands in the dark half**. Cape Town's 90th percentile is 28.6 against Johannesburg's 33.4, so the two cities are comparable and the statistic was the entire problem. Harare had the same defect more mildly, 18 percent dark pixels dragging its median to 3.2 against a 90th percentile of 10.3.
+
+**Why it is worth writing down.** Nothing about the output looked broken. Every city produced a plausible number, the map rendered, the ranking sorted. A statistic can be wrong in a way that is invisible unless you check a case where you already know the answer. Cape Town was that case only because "Cape Town is dimmer than Harare" is obviously absurd to anyone who has seen either city.
+
+**The fix.** Stop sampling a geographic square and start sampling each city's own lit footprint, derived from a per-pixel 90th-percentile envelope of its own observations. Coastal cities, cities against escarpments and cities with rural fringes are all corrected by the same mechanism, and the mask comes from the data rather than a hand-drawn boundary.
+
+**The second fix, structural.** The pipeline now stores pixel arrays rather than summary statistics. The first version stored medians, so changing the statistic meant re-downloading everything. A method change should be a re-aggregation, not a re-download.
+
+**The lesson.** Sanity-check a new metric against a case where you already know the answer, before building anything on top of it. The correct check is not "do the numbers look reasonable" but "is there a specific value here I can independently say is wrong".

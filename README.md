@@ -15,17 +15,21 @@ So this stops asking. The VIIRS Day-Night Band has photographed every square kil
 
 ## What it measures, and what it refuses to measure
 
-**Every city is compared to its own baseline. Never to another city.**
+**Every city is compared to its own history. Never to another city.**
 
-That distinction is the entire project. A map coloured by absolute brightness is a map of population density and wealth, and it would look authoritative while meaning nothing. What this asks instead is: *is this place darker than it normally is?* That question is answerable for Harare and Lagos and a rural district alike, because each is only ever compared to itself.
+That distinction is the entire project. A map coloured by absolute brightness is a map of population density and wealth: it would look authoritative and mean nothing. What this asks instead is *is this place darker than it normally is*, which is answerable for Harare and Lagos and a small town alike, because each is only ever compared to itself.
 
-The headline number per city is the share of its own baseline brightness it typically sits at. The baseline is the 75th percentile of that city's own observations, so one unusually clear night cannot define it.
+The measurement unit is the city's **own lit footprint**, not a box drawn around its centre. Each pixel's normal level is the 90th percentile of that pixel across all observations; pixels that never light up are excluded. The headline number, `dark_share`, is the fraction of that footprint sitting below half its own normal on a given night.
+
+Using a box instead of a footprint is not a small error. It made Cape Town read five times dimmer than Johannesburg, because a quarter of Cape Town's box is ocean. That is written up in [FAILURES.md](FAILURES.md).
 
 ## Status: preview, not a finding
 
-Eight observation nights per city across 2024 and 2025, 26 cities. **No cloud masking or lunar correction applied yet.** A very low single reading is more likely to be weather than a blackout.
+26 cities, sampled at every new moon from 2022 onward, collection ongoing.
 
-The method becomes a measurement at hundreds of nights per city with quality flags applied. It is published now because the pipeline works end to end and the data is real, not because the numbers are ready to cite.
+Lunar brightening is controlled by sampling near new moon and recording the phase on every observation. Poor-coverage nights are discarded. **Thin cloud is not corrected for**, and thin cloud dims a city exactly the way a partial outage does. A single low night is more likely weather than a blackout.
+
+The pre-registered validation gate is in [EVALUATION.md](EVALUATION.md): if `dark_share` cannot separate labelled South African load shedding nights at AUC 0.70 on held-out cities, the electricity interpretation is withdrawn publicly and this ships as what it demonstrably is, an open record of how African cities' brightness varies against their own baselines.
 
 ## Known bias, stated up front
 
@@ -46,7 +50,8 @@ The open archive needs no credentials at all. Granules are Cloud Optimized GeoTI
 
 ```bash
 pip install rasterio numpy
-python pipeline/extract.py pipeline/places.json 20250815,20251204 > obs.json
+python pipeline/extract.py pipeline/places.json 20250815,20251204 pixels.npz
+python pipeline/aggregate.py pixels.npz pipeline/places.json data/places.json
 ```
 
 No API key. No account.
@@ -54,10 +59,18 @@ No API key. No account.
 ## Repository map
 
 ```
-pipeline/   extraction from the open satellite archive
+pipeline/   extraction from the open archive, and the footprint aggregation
 data/       derived per-city series, CC BY 4.0
 docs/       the dashboard, served by GitHub Pages
+.github/    weekly collection, resumable and checkpointed
 ```
+
+## Documents
+
+- [DESIGN.md](DESIGN.md) — the method, what can break it, decisions and what was rejected
+- [EVALUATION.md](EVALUATION.md) — the pre-registered gate and what gets measured
+- [OBJECTIONS.md](OBJECTIONS.md) — ten arguments against this work, with honest answers
+- [FAILURES.md](FAILURES.md) — what was tried that did not work
 
 ## Licence
 

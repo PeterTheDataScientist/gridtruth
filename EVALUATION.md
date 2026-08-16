@@ -1,41 +1,45 @@
 # Evaluation
 
-**Nothing here is filled in yet.** This file exists before the results do, so the evaluation design is fixed before any number is known. That ordering is the point: a method chosen after seeing which one gives the nicer answer is not a measurement.
+**Nothing here is filled in yet.** The file exists before the results do, so the evaluation design is fixed before any number is known. That ordering is the point: a method chosen after seeing which one gives the nicer answer is not a measurement.
+
+## The pre-registered gate
+
+South Africa is the validation bed, because it is the only country in the region with a large public archive of announced load shedding stages at known times. That gives labelled nights: stage 4 and above means widespread scheduled outages; stage 0 means none.
+
+**The gate.** Compare `dark_share` on labelled high-stage nights against labelled stage-0 nights, on held-out cities.
+
+- If the separation reaches **AUC 0.70 or better**, the light measurement carries information about load shedding and city-level reporting proceeds.
+- If it does not, the electricity interpretation is withdrawn publicly and the project ships as what it demonstrably is: an open record of how African cities' night-time brightness varies against their own baselines. That is still a dataset nobody else publishes.
+
+This threshold is fixed now, before the comparison has been run once.
 
 ## What gets measured
 
-### 1. Ingestion completeness
-Against a hand-labelled set of notices collected manually over the first collection period.
+**1. Discrimination.** ROC AUC of `dark_share` against labelled outage nights, reported with a bootstrap confidence interval, on cities excluded from any tuning.
 
-- Recall: notices in the manual set that the parser found
-- Precision: parsed records that correspond to a real published notice
-- Unparsed rate: blocks flagged as possible notices that could not be read
+**2. The confound decomposition.** How much of the variance in `dark_share` is explained by lunar phase, by footprint coverage as a cloud proxy, and by season, before any electricity claim is made. If cloud and moon explain most of it, that is the finding.
 
-Reported per source. A recall figure with no precision figure is meaningless and neither is published alone.
+**3. Sensitivity to the method's own parameters.** Every headline number recomputed across:
+- envelope percentile 75, 90, 95
+- lit threshold floor 0.5, 1.0, 2.0 nW/cm2/sr
+- dark threshold 0.3, 0.5, 0.7 of normal
 
-### 2. Verification accuracy (the one that matters)
-Calibrated on South African data, where the utility's own published stage history gives labelled outage windows at known times and places.
+Reported as a range, not a point. If a city's rank moves materially across that grid, its rank is not a result.
 
-- True positive rate: labelled outages the night-light method detects
-- False positive rate: non-outage nights flagged as outages
-- Detection curve against outage duration: the method almost certainly cannot see a 2-hour cut and should be able to see an 8-hour one. Where that threshold sits is a headline result.
-- Breakdown by cloud fraction, lunar phase, and area size in pixels
-
-**Pre-registered gate.** If the method cannot separate a labelled outage of 4 hours or more from a non-outage night at better than 0.70 AUC on held-out areas, the verification claim is withdrawn and the project ships as a schedule archive only. That threshold is fixed now, before any result exists.
-
-### 3. Reliability index stability
-- Bootstrap confidence intervals on every published suburb-month value
-- Sensitivity of each index value to the baseline definition, reported as a range across baseline methods, not a single number
-- Test-retest: does the index for a past month change when recomputed with more recent data
+**4. Stability.** Does a city's figure for a past period change when recomputed with more recent data? For a fixed global envelope it will, which is the growth confound in Objection 5. The size of that drift is measured rather than assumed small.
 
 ## Slices, always reported
 
-Per suburb. Per month. Per cloud-fraction band. Per outage-duration band. Per area size in pixels. A single headline number with no slices hides exactly the failure modes that matter, so the headline is never published alone.
+Per city. Per month. Per lunar-phase band. Per coverage band. Per city footprint size in pixels. A single headline with no slices hides precisely the failure modes that matter, so the headline is never published alone.
+
+## Uncertainty
+
+Every published `dark_share` carries a bootstrap confidence interval over nights. Where two cities' intervals overlap, the published statement is that they cannot be distinguished. No ranking is presented as ordinal where the intervals do not support it.
 
 ## Failure cases
 
-Every published result links to the specific nights and areas where the method got it wrong, verbatim, with the underlying radiance series. Not a summary of failures, the failures themselves.
+Every published result links to the specific city-nights where the method disagreed with the South African labels, with the underlying pixel statistics. Not a count of failures, the failures themselves.
 
 ## Held-out design
 
-Areas, not nights, are held out. Holding out nights leaks, because an area's baseline is estimated from its own other nights and the model would be evaluated on areas it had effectively been fitted to. Entire suburbs are excluded from calibration and used only for the final measurement.
+**Cities are held out, never nights.** Holding out nights leaks, because a city's envelope is estimated from its own other nights, so the model would be evaluated on cities it had effectively been fitted to. Entire cities are excluded from any parameter choice and used only for the final measurement.
