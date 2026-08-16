@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GridTruth — African electricity reliability, measured from orbit</title>
+<meta name="description" content="Interactive dashboard: how much of each African city's normally lit area goes dark, measured against its own history from VIIRS satellite data. Open data, CC BY.">
+<style>
+.viz-root{
+  color-scheme:light;
+  --surface-1:#fcfcfb; --plane:#f9f9f7; --raised:#ffffff;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+  --s100:#cde2fb; --s150:#b7d3f6; --s200:#9ec5f4; --s250:#86b6ef; --s300:#6da7ec;
+  --s400:#3987e5; --s450:#2a78d6; --s500:#256abf; --s550:#1c5cab; --s650:#104281; --s700:#0d366b;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4;
+  --accent:#2a78d6; --critical:#d03b3b; --good:#0ca30c; --warn:#fab219;
+  --land:#eae9e3; --land-line:#d8d7cf; --chip:#f0efec;
+}
+@media (prefers-color-scheme:dark){
+  :root:where(:not([data-theme="light"])) .viz-root{
+    color-scheme:dark;
+    --surface-1:#1a1a19; --plane:#0d0d0d; --raised:#232322;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+    --s100:#0d366b; --s150:#104281; --s200:#184f95; --s250:#1c5cab; --s300:#256abf;
+    --s400:#2a78d6; --s450:#3987e5; --s500:#5598e7; --s550:#6da7ec; --s650:#9ec5f4; --s700:#cde2fb;
+    --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+    --accent:#3987e5; --critical:#d03b3b; --good:#0ca30c; --warn:#fab219;
+    --land:#232322; --land-line:#33322f; --chip:#2a2a28;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--text-primary);
+     font:14.5px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1400px;margin:0 auto;padding:0 16px 56px}
+h1{font-size:clamp(20px,3.4vw,27px);font-weight:600;letter-spacing:-.02em;margin:0 0 4px}
+h2{font-size:14px;font-weight:600;margin:0}
+.sub{color:var(--text-secondary);font-size:13px;margin:2px 0 0}
+.hint{color:var(--muted);font-size:11.5px;margin:2px 0 0}
+header{padding:22px 0 14px}
+a{color:var(--accent)}
+
+/* ---------- filter bar ---------- */
+.filters{position:sticky;top:0;z-index:15;background:var(--plane);
+         border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+         padding:10px 0;margin-bottom:14px}
+.frow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.fgroup{display:flex;flex-direction:column;gap:3px}
+.flabel{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+select,input[type=search],button.btn{
+  font:inherit;font-size:13px;background:var(--surface-1);color:var(--text-primary);
+  border:1px solid var(--border);border-radius:7px;padding:6px 10px;min-height:33px}
+select{cursor:pointer;padding-right:26px}
+input[type=search]{min-width:150px}
+button.btn{cursor:pointer}
+button.btn:hover{border-color:var(--muted)}
+.seg{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.seg button{font:inherit;font-size:12.5px;background:var(--surface-1);color:var(--text-secondary);
+            border:0;padding:7px 12px;cursor:pointer;border-right:1px solid var(--border)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.chip{font-size:11.5px;background:var(--chip);border:1px solid var(--border);border-radius:20px;
+      padding:3px 8px 3px 10px;display:inline-flex;align-items:center;gap:5px;color:var(--text-secondary)}
+.chip b{color:var(--text-primary);font-weight:600}
+.chip button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0 1px}
+.chip button:hover{color:var(--critical)}
+.chip.pin b{color:var(--pc,var(--text-primary))}
+
+/* ---------- kpi ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--surface-1);border:1px solid var(--border);border-radius:9px;padding:11px 13px}
+.kpi b{display:block;font-size:24px;font-weight:600;line-height:1.1;margin-bottom:2px;letter-spacing:-.01em}
+.kpi span{font-size:11px;color:var(--muted);display:block;line-height:1.3}
+.kpi .ctx{font-size:11px;color:var(--text-secondary);margin-top:3px;display:block}
+
+/* ---------- layout ---------- */
+.row{display:grid;gap:14px;margin-bottom:14px}
+.r-map{grid-template-columns:1.25fr 1fr}
+.r-two{grid-template-columns:1fr 1fr}
+@media(max-width:1050px){.r-map,.r-two{grid-template-columns:1fr}}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:14px}
+.chead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+
+svg{display:block;width:100%;height:auto;overflow:visible}
+.land{fill:var(--land);stroke:var(--land-line);stroke-width:.35}
+.bub{cursor:pointer;stroke:var(--surface-1);stroke-width:1.6}
+.bub:hover{stroke:var(--text-primary);stroke-width:2}
+.bub.pinned{stroke:var(--text-primary);stroke-width:2.5}
+.bub.dim{opacity:.18}
+.gridline{stroke:var(--grid);stroke-width:1}
+.axisline{stroke:var(--axis);stroke-width:1}
+.tick{font-size:10px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.alab{font-size:10.5px;fill:var(--text-secondary)}
+.serie{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.bar{cursor:pointer}
+.bar rect.v{rx:3}
+.bar:hover rect.v{opacity:.82}
+.blab{font-size:10.5px;fill:var(--text-secondary)}
+.bval{font-size:10.5px;fill:var(--text-secondary);font-variant-numeric:tabular-nums}
+.bar.pinned .blab,.bar.pinned .bval{fill:var(--text-primary);font-weight:600}
+.cell{cursor:pointer}
+.cell:hover{stroke:var(--text-primary);stroke-width:1.5}
+.pt{cursor:pointer;stroke:var(--surface-1);stroke-width:1.4}
+.pt.pinned{stroke:var(--text-primary);stroke-width:2}
+
+.legend{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.ramp{display:flex;border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.ramp i{width:22px;height:10px;display:block}
+.klegend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--text-secondary);margin-top:6px}
+.klegend span{display:inline-flex;align-items:center;gap:5px}
+.klegend i{width:11px;height:3px;border-radius:2px;display:block}
+
+#tip{position:fixed;pointer-events:none;opacity:0;transition:opacity .09s;z-index:40;
+     background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:8px 10px;
+     font-size:12.5px;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:250px}
+#tip b{display:block;margin-bottom:3px;font-size:13px;color:var(--text-primary)}
+#tip span{color:var(--text-secondary);font-variant-numeric:tabular-nums}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th{text-align:right;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+   font-weight:500;padding:0 9px 7px 0;border-bottom:1px solid var(--axis);cursor:pointer;white-space:nowrap}
+th:first-child,th:nth-child(2){text-align:left}
+th:hover{color:var(--text-primary)}
+th .ar{opacity:.45;font-size:9px}
+td{padding:7px 9px 7px 0;border-bottom:1px solid var(--grid);color:var(--text-secondary);text-align:right}
+td:first-child,td:nth-child(2){text-align:left}
+td:first-child{color:var(--text-primary);cursor:pointer}
+td:first-child:hover{color:var(--accent)}
+tr.pinned td{background:var(--plane)}
+.minibar{display:inline-block;height:7px;border-radius:2px;background:var(--accent);vertical-align:middle;margin-right:6px}
+
+.caveat{border-left:2px solid var(--critical);padding:2px 0 2px 13px;margin-top:16px;
+        font-size:12.5px;color:var(--text-secondary);max-width:98ch}
+.caveat b{color:var(--text-primary)}
+footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.empty{padding:26px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body class="viz-root">
+<div class="wrap">
+
+<header>
+  <h1>Which African cities go dark, and how often</h1>
+  <p class="sub">Each city measured against <b>its own</b> lit footprint and its own history, from VIIRS satellite passes. Never against other cities, because that would only map wealth.</p>
+</header>
+
+<div class="filters">
+  <div class="frow">
+    <div class="fgroup"><label class="flabel" for="fRegion">Region</label>
+      <select id="fRegion"><option value="">All Africa</option></select></div>
+    <div class="fgroup"><label class="flabel" for="fCountry">Country</label>
+      <select id="fCountry"><option value="">All countries</option></select></div>
+    <div class="fgroup"><label class="flabel" for="fYear">Period</label>
+      <select id="fYear"><option value="">All years</option></select></div>
+    <div class="fgroup"><label class="flabel" for="fSize">City size</label>
+      <select id="fSize">
+        <option value="">Any size</option>
+        <option value="lg">Large (top third)</option>
+        <option value="md">Medium</option>
+        <option value="sm">Small (bottom third)</option>
+      </select></div>
+    <div class="fgroup"><label class="flabel">Measure</label>
+      <div class="seg" id="fMetric">
+        <button data-m="dark" aria-pressed="true">Share dark</button>
+        <button data-m="lit" aria-pressed="false">Brightness kept</button>
+        <button data-m="rad" aria-pressed="false">Radiance</button>
+      </div></div>
+    <div class="fgroup"><label class="flabel" for="fSearch">Find a city</label>
+      <input type="search" id="fSearch" placeholder="Harare, Lagos…" autocomplete="off"></div>
+    <div class="fgroup"><label class="flabel">&nbsp;</label>
+      <button class="btn" id="fReset">Reset all</button></div>
+  </div>
+  <div class="chips" id="chips"></div>
+</div>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="row r-map">
+  <div class="card">
+    <div class="chead">
+      <div><h2 id="mapTitle">Where cities go dark</h2>
+        <p class="hint">Circle size is how bright the city normally is. Click to pin, click again to unpin.</p></div>
+    </div>
+    <svg id="map" viewBox="0 0 640 520" role="img" aria-label="Map of African cities"></svg>
+    <div class="legend"><span id="rampLo">Less dark</span><span class="ramp" id="ramp"></span><span id="rampHi">More dark</span></div>
+  </div>
+  <div class="card">
+    <div class="chead"><div><h2 id="rankTitle">City ranking</h2>
+      <p class="hint">Click a bar to pin that city into the comparison.</p></div></div>
+    <svg id="rank" viewBox="0 0 460 640" role="img" aria-label="Cities ranked"></svg>
+  </div>
+</div>
+
+<div class="row r-two">
+  <div class="card">
+    <div class="chead"><div><h2 id="tsTitle">Over time</h2>
+      <p class="hint">Pin up to five cities to compare. Nothing pinned shows the filtered average.</p></div></div>
+    <svg id="ts" viewBox="0 0 660 260" role="img" aria-label="Metric over time"></svg>
+    <div class="klegend" id="tsLegend"></div>
+  </div>
+  <div class="card">
+    <div class="chead"><div><h2>Seasonality</h2>
+      <p class="hint">Average by calendar month across all years. The rainy season shows up as cloud, which is a caveat, not a blackout.</p></div></div>
+    <svg id="heat" viewBox="0 0 660 480" role="img" aria-label="City by month heatmap"></svg>
+  </div>
+</div>
+
+<div class="row r-two">
+  <div class="card">
+    <div class="chead"><div><h2>Does city size explain it?</h2>
+      <p class="hint">Normal brightness against share going dark. If the cloud has no slope, dimming is not simply a size or wealth effect.</p></div></div>
+    <svg id="scatter" viewBox="0 0 660 340" role="img" aria-label="Brightness against dark share"></svg>
+  </div>
+  <div class="card">
+    <div class="chead"><div><h2>By country</h2>
+      <p class="hint">Cities averaged within each country. Bar width shows the range across its cities.</p></div></div>
+    <svg id="ctry" viewBox="0 0 660 340" role="img" aria-label="Country rollup"></svg>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead">
+    <div><h2>All cities in view</h2><p class="hint">Click a column heading to sort. Click a city name to pin it.</p></div>
+    <button class="btn" id="csv">Download CSV</button>
+  </div>
+  <div style="overflow-x:auto"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+</div>
+
+<div class="caveat">
+  <b>Read this before drawing conclusions. Nothing here is a finding yet.</b>
+  Observations are sampled near new moon so lunar brightening is controlled, and nights with poor coverage are discarded. But <b>thin cloud is not corrected for</b>, and thin cloud dims a city in exactly the way a partial outage does. A single low night is more likely weather than a blackout. Read the ranking and the trend, not any individual number.
+  <br><br>
+  <b>Known bias.</b> Generators and rooftop solar dim less during an outage and they track wealth, so this systematically under-detects outages in richer areas and richer countries.
+  <br><br>
+  <b>What the number means.</b> The share of a city's normally lit area sitting below half its own usual brightness. Because "usual" is the 90th percentile of that city's own nights, a typical night sits below it by construction, so the absolute level runs high everywhere. The comparison between cities is the informative part, not the level.
+</div>
+
+<footer>
+  Data VIIRS Day-Night Band via the World Bank Light Every Night archive, public domain, no account required.
+  Code <a href="https://github.com/PeterTheDataScientist/gridtruth">Apache 2.0</a>, derived data CC BY 4.0.
+  Built by <a href="https://petermundowa.com">Peter Tinashe Mundowa</a> in Harare.
+</footer>
+</div>
+<div id="tip" role="status"></div>
+
+<script>
+const DATA = __DATA__, AFRICA = __AFRICA__;
+const ALL = DATA.places;
+
+const REGION = {
+  "Zimbabwe":"Southern","South Africa":"Southern","Zambia":"Southern","Mozambique":"Southern",
+  "Botswana":"Southern","Namibia":"Southern","Malawi":"Southern","Angola":"Southern",
+  "Kenya":"East","Tanzania":"East","Uganda":"East","Ethiopia":"East",
+  "Nigeria":"West","Ghana":"West","Ivory Coast":"West","Senegal":"West",
+  "DR Congo":"Central","Egypt":"North","Morocco":"North"};
+ALL.forEach(p => p.region = REGION[p.country] || "Other");
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const RAMP = ["--s100","--s150","--s250","--s300","--s400","--s450","--s550","--s650","--s700"];
+const LINE = ["--c1","--c2","--c3","--c4","--c5"];
+const cssv = n => getComputedStyle(document.body).getPropertyValue(n).trim();
+
+const METRICS = {
+  dark:{ key:"dark_share", agg:"mean_dark_share", label:"Share of lit area dark",
+         fmt:v=>Math.round(v*100)+"%", axis:v=>Math.round(v*100)+"%", hiIsBad:true,
+         lo:"Less goes dark", hi:"More goes dark", unit:"" },
+  lit:{  key:"lit_share",  agg:"mean_lit_share",  label:"Brightness kept vs its own normal",
+         fmt:v=>Math.round(v*100)+"%", axis:v=>Math.round(v*100)+"%", hiIsBad:false,
+         lo:"Keeps less", hi:"Keeps more", unit:"" },
+  rad:{  key:"mean_radiance", agg:"normal_radiance", label:"Normal radiance",
+         fmt:v=>v.toFixed(1), axis:v=>v.toFixed(0), hiIsBad:false,
+         lo:"Dimmer", hi:"Brighter", unit:" nW/cm²/sr" }
+};
+
+const F = { region:"", country:"", year:"", size:"", metric:"dark", q:"" };
+let pinned = [];
+
+/* ---------- helpers ---------- */
+const tip = document.getElementById("tip");
+function showTip(e, html){
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect();
+  tip.style.left = Math.min(e.clientX+14, innerWidth-r.width-10)+"px";
+  tip.style.top  = Math.min(e.clientY+14, innerHeight-r.height-10)+"px";
+}
+const hideTip = () => tip.style.opacity = 0;
+const M = () => METRICS[F.metric];
+
+function sizeBand(){
+  const s=[...ALL].map(p=>p.normal_radiance).sort((a,b)=>a-b);
+  return [s[Math.floor(s.length/3)], s[Math.floor(2*s.length/3)]];
+}
+const [SZ1, SZ2] = sizeBand();
+
+function seriesOf(p){
+  return F.year ? p.series.filter(s=>s.date.startsWith(F.year)) : p.series;
+}
+function aggOf(p){
+  const s = seriesOf(p);
+  if(!s.length) return null;
+  if(F.metric==="rad") return p.normal_radiance;
+  const k = M().key;
+  return s.reduce((a,b)=>a+b[k],0)/s.length;
+}
+function view(){
+  return ALL.filter(p=>{
+    if(F.region && p.region!==F.region) return false;
+    if(F.country && p.country!==F.country) return false;
+    if(F.size==="lg" && p.normal_radiance < SZ2) return false;
+    if(F.size==="md" && (p.normal_radiance < SZ1 || p.normal_radiance >= SZ2)) return false;
+    if(F.size==="sm" && p.normal_radiance >= SZ1) return false;
+    if(F.q && !(`${p.city} ${p.country}`.toLowerCase().includes(F.q))) return false;
+    return seriesOf(p).length > 0;
+  }).map(p=>({...p, val: aggOf(p)})).filter(p=>p.val!=null);
+}
+function scale(V){
+  const vals=V.map(p=>p.val);
+  return {lo:Math.min(...vals), hi:Math.max(...vals)};
+}
+function colOf(v, sc){
+  const t = sc.hi===sc.lo ? .5 : (v-sc.lo)/(sc.hi-sc.lo);
+  // The ramp always encodes magnitude of the selected measure. The legend labels
+  // flip with the measure so "darker" never silently changes meaning.
+  return cssv(RAMP[Math.min(RAMP.length-1, Math.max(0, Math.round(t*(RAMP.length-1))))]);
+}
+function togglePin(name){
+  const i = pinned.indexOf(name);
+  if(i>=0) pinned.splice(i,1);
+  else { if(pinned.length>=5) pinned.shift(); pinned.push(name); }
+  render();
+}
+const pinColor = n => cssv(LINE[pinned.indexOf(n) % LINE.length]);
+
+/* ---------- filter controls ---------- */
+(function initFilters(){
+  const regions=[...new Set(ALL.map(p=>p.region))].sort();
+  const countries=[...new Set(ALL.map(p=>p.country))].sort();
+  const years=[...new Set(ALL.flatMap(p=>p.series.map(s=>s.date.slice(0,4))))].sort();
+  regions.forEach(r=>fRegion.add(new Option(r+" Africa", r)));
+  countries.forEach(c=>fCountry.add(new Option(c, c)));
+  years.forEach(y=>fYear.add(new Option(y, y)));
+
+  fRegion.onchange = e => { F.region=e.target.value; syncCountries(); render(); };
+  fCountry.onchange = e => { F.country=e.target.value; render(); };
+  fYear.onchange = e => { F.year=e.target.value; render(); };
+  fSize.onchange = e => { F.size=e.target.value; render(); };
+  fSearch.oninput = e => { F.q=e.target.value.trim().toLowerCase(); render(); };
+  document.querySelectorAll("#fMetric button").forEach(b=>b.onclick=()=>{
+    F.metric=b.dataset.m;
+    document.querySelectorAll("#fMetric button").forEach(o=>o.setAttribute("aria-pressed", o===b));
+    render();
+  });
+  fReset.onclick = ()=>{
+    Object.assign(F,{region:"",country:"",year:"",size:"",q:""});
+    pinned=[]; fRegion.value=fCountry.value=fYear.value=fSize.value=""; fSearch.value="";
+    syncCountries(); render();
+  };
+  function syncCountries(){
+    const keep = F.region ? ALL.filter(p=>p.region===F.region).map(p=>p.country) : countries;
+    const set=[...new Set(keep)].sort();
+    fCountry.innerHTML='<option value="">All countries</option>';
+    set.forEach(c=>fCountry.add(new Option(c,c)));
+    if(!set.includes(F.country)) F.country="";
+    fCountry.value=F.country;
+  }
+})();
+
+function drawChips(V){
+  const bits=[];
+  if(F.region) bits.push(`<span class="chip">Region <b>${F.region}</b><button data-c="region">×</button></span>`);
+  if(F.country) bits.push(`<span class="chip">Country <b>${F.country}</b><button data-c="country">×</button></span>`);
+  if(F.year) bits.push(`<span class="chip">Year <b>${F.year}</b><button data-c="year">×</button></span>`);
+  if(F.size) bits.push(`<span class="chip">Size <b>${fSize.selectedOptions[0].text}</b><button data-c="size">×</button></span>`);
+  if(F.q) bits.push(`<span class="chip">Search <b>${F.q}</b><button data-c="q">×</button></span>`);
+  pinned.forEach(n=>bits.push(
+    `<span class="chip pin" style="--pc:${pinColor(n)}">Pinned <b>${n.split(",")[0]}</b><button data-p="${n}">×</button></span>`));
+  chips.innerHTML = bits.join("") || `<span class="hint">No filters. Showing all ${ALL.length} cities.</span>`;
+  chips.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>{
+    F[b.dataset.c]="";
+    ({region:fRegion,country:fCountry,year:fYear,size:fSize}[b.dataset.c]||{}).value="";
+    if(b.dataset.c==="q") fSearch.value="";
+    render();
+  });
+  chips.querySelectorAll("button[data-p]").forEach(b=>b.onclick=()=>togglePin(b.dataset.p));
+}
+
+/* ---------- KPIs ---------- */
+function drawKpis(V){
+  const m=M();
+  if(!V.length){ kpis.innerHTML=`<div class="kpi"><b>0</b><span>cities match these filters</span></div>`; return; }
+  const vals=V.map(p=>p.val).sort((a,b)=>a-b);
+  const med=vals[Math.floor(vals.length/2)];
+  const obs=V.reduce((a,p)=>a+seriesOf(p).length,0);
+  const worst=[...V].sort((a,b)=>m.hiIsBad? b.val-a.val : a.val-b.val)[0];
+  const best =[...V].sort((a,b)=>m.hiIsBad? a.val-b.val : b.val-a.val)[0];
+  // year on year, only meaningful with no single-year filter
+  let trend="";
+  if(!F.year){
+    const yrs=[...new Set(V.flatMap(p=>p.series.map(s=>s.date.slice(0,4))))].sort();
+    if(yrs.length>1 && F.metric!=="rad"){
+      const at=y=>{const a=V.flatMap(p=>p.series.filter(s=>s.date.startsWith(y)).map(s=>s[m.key]));
+                   return a.length? a.reduce((x,y)=>x+y,0)/a.length : null;};
+      const a=at(yrs[0]), b=at(yrs[yrs.length-1]);
+      if(a!=null&&b!=null){
+        const d=(b-a)*100, up=d>0;
+        const bad = m.hiIsBad? up : !up;
+        trend=`<span class="ctx" style="color:${bad?'var(--critical)':'var(--good)'}">
+               ${up?"▲":"▼"} ${Math.abs(d).toFixed(1)} pts since ${yrs[0]}</span>`;
+      }
+    }
+  }
+  kpis.innerHTML=`
+   <div class="kpi"><b>${V.length}</b><span>cities in view</span>
+     <span class="ctx">${[...new Set(V.map(p=>p.country))].length} countries</span></div>
+   <div class="kpi"><b>${obs.toLocaleString()}</b><span>satellite observations</span>
+     <span class="ctx">${F.year||"2022 to 2025"}</span></div>
+   <div class="kpi"><b>${m.fmt(med)}</b><span>median, ${m.label.toLowerCase()}</span>${trend}</div>
+   <div class="kpi"><b>${m.fmt(worst.val)}</b><span>${m.hiIsBad?"highest":"lowest"}</span>
+     <span class="ctx">${worst.city}, ${worst.country}</span></div>
+   <div class="kpi"><b>${m.fmt(best.val)}</b><span>${m.hiIsBad?"lowest":"highest"}</span>
+     <span class="ctx">${best.city}, ${best.country}</span></div>`;
+}
+
+/* ---------- map ---------- */
+const MW=640,MH=520,WL=-19,EL=53,SL=-36,NL=39;
+const px=l=>(l-WL)/(EL-WL)*MW, py=l=>(NL-l)/(NL-SL)*MH;
+function drawMap(V){
+  const sc=scale(V), m=M();
+  const rMax=Math.max(...ALL.map(p=>p.normal_radiance));
+  const rad=p=>3.5+12*Math.sqrt(p.normal_radiance/rMax);
+  const inView=new Set(V.map(p=>p.place));
+  const land=AFRICA.map(pa=>{
+    const c=pa.replace(/M|Z/g,"").split("L").map(s=>{const[x,y]=s.split(",");return px(+x).toFixed(1)+","+py(+y).toFixed(1)}).join("L");
+    return `<path class="land" d="M${c}Z"/>`}).join("");
+  const bubs=ALL.map(p=>{
+    const on=inView.has(p.place), v=on? V.find(x=>x.place===p.place).val : null;
+    const isPin=pinned.includes(p.place);
+    return `<circle class="bub${on?"":" dim"}${isPin?" pinned":""}" data-k="${p.place}"
+      cx="${px(p.lon).toFixed(1)}" cy="${py(p.lat).toFixed(1)}" r="${rad(p).toFixed(1)}"
+      fill="${on? colOf(v,sc) : cssv('--muted')}"/>`}).join("");
+  map.innerHTML=land+bubs;
+  document.getElementById("ramp").innerHTML=RAMP.map(v=>`<i style="background:var(${v})"></i>`).join("");
+  rampLo.textContent=m.lo; rampHi.textContent=m.hi;
+  mapTitle.textContent = m.label + " by city";
+  map.querySelectorAll(".bub").forEach(el=>{
+    const p=ALL.find(x=>x.place===el.dataset.k);
+    const vp=V.find(x=>x.place===p.place);
+    el.addEventListener("mousemove",e=>showTip(e,
+      `<b>${p.city}</b><span>${p.country} · ${p.region} Africa<br>
+       ${vp? m.label+": <b style='display:inline'>"+m.fmt(vp.val)+m.unit+"</b>" : "not in current filter"}<br>
+       Normally ${p.normal_radiance.toFixed(1)} nW/cm²/sr · ${seriesOf(p).length} nights</span>`));
+    el.addEventListener("mouseleave",hideTip);
+    el.addEventListener("click",()=>togglePin(p.place));
+  });
+}
+
+/* ---------- ranking ---------- */
+function drawRank(V){
+  const m=M(), sc=scale(V);
+  const rows=[...V].sort((a,b)=> b.val-a.val);  // always highest measure first
+  const w=460, ml=104, mr=46, rowH=Math.max(15, Math.min(22, 560/Math.max(rows.length,1)));
+  const h=22+rows.length*rowH+8, iw=w-ml-mr;
+  rank.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  rankTitle.textContent = `Ranked by ${m.label.toLowerCase()}`;
+  if(!rows.length){ rank.innerHTML=`<text class="tick" x="12" y="26">No cities match.</text>`; return; }
+  const vmax=Math.max(...rows.map(r=>r.val))*1.05||1;
+  let g="";
+  for(let k=0;k<=4;k++){const x=ml+iw*k/4;
+    g+=`<line class="gridline" x1="${x}" y1="18" x2="${x}" y2="${18+rows.length*rowH}"/>
+        <text class="tick" x="${x}" y="12" text-anchor="middle">${m.axis(vmax*k/4)}</text>`;}
+  rows.forEach((d,i)=>{
+    const y=18+i*rowH, bw=Math.max(2, iw*d.val/vmax), pin=pinned.includes(d.place);
+    g+=`<g class="bar${pin?" pinned":""}" data-k="${d.place}">
+      <rect x="0" y="${y}" width="${w}" height="${rowH}" fill="transparent"/>
+      <text class="blab" x="${ml-8}" y="${y+rowH/2+3.5}" text-anchor="end">${d.city}</text>
+      <rect class="v" x="${ml}" y="${y+2.5}" width="${bw.toFixed(1)}" height="${rowH-6}"
+            fill="${pin? pinColor(d.place) : colOf(d.val,sc)}"/>
+      <text class="bval" x="${ml+bw+6}" y="${y+rowH/2+3.5}">${m.fmt(d.val)}</text></g>`;});
+  rank.innerHTML=g;
+  rank.querySelectorAll(".bar").forEach(el=>{
+    const d=rows.find(r=>r.place===el.dataset.k);
+    el.addEventListener("mousemove",e=>showTip(e,
+      `<b>${d.city}</b><span>${d.country}<br>${m.label}: <b style="display:inline">${m.fmt(d.val)}${m.unit}</b><br>
+       Worst night ${Math.round(d.worst_dark_share*100)}% · ${seriesOf(d).length} nights</span>`));
+    el.addEventListener("mouseleave",hideTip);
+    el.addEventListener("click",()=>togglePin(d.place));
+  });
+}
+
+/* ---------- time series ---------- */
+function drawTS(V){
+  const m=M(), w=660,h=260,ml=46,mr=14,mt=12,mb=30, iw=w-ml-mr, ih=h-mt-mb;
+  const dates=[...new Set(V.flatMap(p=>seriesOf(p).map(s=>s.date)))].sort();
+  tsTitle.textContent = m.label + " over time";
+  if(!dates.length){ ts.innerHTML=""; tsLegend.innerHTML=""; return; }
+  const X=d=>ml+(dates.length<2? iw/2 : dates.indexOf(d)/(dates.length-1)*iw);
+
+  const lines = pinned.length
+    ? pinned.filter(n=>V.some(p=>p.place===n)).map(n=>{
+        const p=V.find(x=>x.place===n);
+        return {name:p.city, colour:pinColor(n),
+                pts:seriesOf(p).map(s=>({d:s.date, v:m.key==="mean_radiance"? s.mean_radiance : s[m.key]}))};})
+    : [{name:`Average of ${V.length} cities`, colour:cssv("--c1"),
+        pts:dates.map(d=>{const a=V.flatMap(p=>seriesOf(p).filter(s=>s.date===d)
+              .map(s=>m.key==="mean_radiance"? s.mean_radiance : s[m.key]));
+            return {d, v:a.length? a.reduce((x,y)=>x+y,0)/a.length : null};}).filter(o=>o.v!=null)}];
+
+  const all=lines.flatMap(l=>l.pts.map(p=>p.v));
+  const ymax = m.key==="mean_radiance" ? Math.max(...all)*1.12 : Math.min(1, Math.max(...all)*1.12);
+  const Y=v=>mt+ih-(v/ymax)*ih;
+  let g="";
+  for(let k=0;k<=4;k++){const v=ymax*k/4,y=Y(v);
+    g+=`<line class="gridline" x1="${ml}" y1="${y.toFixed(1)}" x2="${w-mr}" y2="${y.toFixed(1)}"/>
+        <text class="tick" x="${ml-7}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${m.axis(v)}</text>`;}
+  let last="";
+  dates.forEach(d=>{const yr=d.slice(0,4);
+    if(yr!==last){last=yr;
+      g+=`<text class="tick" x="${X(d).toFixed(1)}" y="${h-9}" text-anchor="middle">${yr}</text>`;}});
+  lines.forEach(l=>{
+    g+=`<path class="serie" stroke="${l.colour}" d="${l.pts.map((p,i)=>`${i?"L":"M"}${X(p.d).toFixed(1)},${Y(p.v).toFixed(1)}`).join("")}"/>`;
+    l.pts.forEach(p=>{g+=`<circle class="tsp" data-n="${l.name}" data-d="${p.d}" data-v="${p.v}"
+       cx="${X(p.d).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3.4" fill="${l.colour}"
+       stroke="${cssv('--surface-1')}" stroke-width="1.4"/>`;});});
+  g+=`<line class="axisline" x1="${ml}" y1="${mt+ih}" x2="${w-mr}" y2="${mt+ih}"/>`;
+  ts.innerHTML=g;
+  tsLegend.innerHTML=lines.map(l=>`<span><i style="background:${l.colour}"></i>${l.name}</span>`).join("");
+  ts.querySelectorAll(".tsp").forEach(el=>el.addEventListener("mousemove",e=>{
+    const d=el.dataset.d;
+    showTip(e,`<b>${el.dataset.n}</b><span>${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6)}<br>
+      ${m.label}: <b style="display:inline">${m.fmt(+el.dataset.v)}${m.unit}</b></span>`);
+  }));
+  ts.querySelectorAll(".tsp").forEach(el=>el.addEventListener("mouseleave",hideTip));
+}
+
+/* ---------- seasonality heatmap ---------- */
+function drawHeat(V){
+  const m=M(), w=660, ml=104, mr=10, mt=22, cellH=Math.max(11,Math.min(19, 420/Math.max(V.length,1)));
+  const h=mt+V.length*cellH+12, cw=(w-ml-mr)/12;
+  heat.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  if(!V.length){ heat.innerHTML=""; return; }
+  const rows=[...V].sort((a,b)=>b.val-a.val);
+  const cells=[];
+  rows.forEach(p=>{
+    const byM=Array.from({length:12},()=>[]);
+    seriesOf(p).forEach(s=>{const mi=+s.date.slice(4,6)-1;
+      byM[mi].push(m.key==="mean_radiance"? s.mean_radiance : s[m.key]);});
+    cells.push(byM.map(a=>a.length? a.reduce((x,y)=>x+y,0)/a.length : null));});
+  const flat=cells.flat().filter(v=>v!=null);
+  const lo=Math.min(...flat), hi=Math.max(...flat);
+  let g="";
+  MONTHS.forEach((mo,i)=>g+=`<text class="tick" x="${(ml+i*cw+cw/2).toFixed(1)}" y="14" text-anchor="middle">${mo}</text>`);
+  rows.forEach((p,r)=>{
+    g+=`<text class="blab" x="${ml-7}" y="${(mt+r*cellH+cellH/2+3.5).toFixed(1)}" text-anchor="end">${p.city}</text>`;
+    cells[r].forEach((v,c)=>{
+      const x=ml+c*cw, y=mt+r*cellH;
+      if(v==null){g+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(cw-1.5).toFixed(1)}" height="${(cellH-1.5).toFixed(1)}" fill="${cssv('--grid')}" opacity=".4"/>`;return;}
+      const t=hi===lo?.5:(v-lo)/(hi-lo);
+      g+=`<rect class="cell" data-c="${p.city}" data-m="${MONTHS[c]}" data-v="${v}"
+        x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(cw-1.5).toFixed(1)}" height="${(cellH-1.5).toFixed(1)}"
+        fill="${cssv(RAMP[Math.round(t*(RAMP.length-1))])}"/>`;});});
+  heat.innerHTML=g;
+  heat.querySelectorAll(".cell").forEach(el=>{
+    el.addEventListener("mousemove",e=>showTip(e,
+      `<b>${el.dataset.c}</b><span>${el.dataset.m}<br>${m.label}: <b style="display:inline">${m.fmt(+el.dataset.v)}${m.unit}</b></span>`));
+    el.addEventListener("mouseleave",hideTip);});
+}
+
+/* ---------- scatter ---------- */
+function drawScatter(V){
+  const m=M(), w=660,h=340,ml=50,mr=16,mt=14,mb=40, iw=w-ml-mr, ih=h-mt-mb;
+  if(!V.length){ scatter.innerHTML=""; return; }
+  const xs=V.map(p=>p.normal_radiance), ys=V.map(p=>p.val);
+  const xmax=Math.max(...xs)*1.08, ymax=Math.max(...ys)*1.12;
+  const X=v=>ml+(v/xmax)*iw, Y=v=>mt+ih-(v/ymax)*ih, sc=scale(V);
+  let g="";
+  for(let k=0;k<=4;k++){const y=Y(ymax*k/4);
+    g+=`<line class="gridline" x1="${ml}" y1="${y.toFixed(1)}" x2="${w-mr}" y2="${y.toFixed(1)}"/>
+        <text class="tick" x="${ml-7}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${m.axis(ymax*k/4)}</text>`;}
+  for(let k=0;k<=4;k++){const x=X(xmax*k/4);
+    g+=`<text class="tick" x="${x.toFixed(1)}" y="${h-22}" text-anchor="middle">${(xmax*k/4).toFixed(0)}</text>`;}
+  g+=`<text class="alab" x="${ml+iw/2}" y="${h-6}" text-anchor="middle">Normal radiance, nW/cm²/sr</text>`;
+  // least squares line, so the "is it just size" question gets an actual answer
+  const n=V.length, sx=xs.reduce((a,b)=>a+b,0), sy=ys.reduce((a,b)=>a+b,0);
+  const sxy=xs.reduce((a,x,i)=>a+x*ys[i],0), sxx=xs.reduce((a,x)=>a+x*x,0);
+  const slope=(n*sxy-sx*sy)/(n*sxx-sx*sx||1), icept=(sy-slope*sx)/n;
+  const my=sy/n, ssTot=ys.reduce((a,y)=>a+(y-my)**2,0);
+  const ssRes=ys.reduce((a,y,i)=>a+(y-(slope*xs[i]+icept))**2,0);
+  const r2=ssTot? 1-ssRes/ssTot : 0;
+  if(n>2) g+=`<line x1="${X(0)}" y1="${Y(Math.max(0,icept))}" x2="${X(xmax)}" y2="${Y(Math.max(0,slope*xmax+icept))}"
+     stroke="${cssv('--muted')}" stroke-width="1.5" stroke-dasharray="4 4"/>
+     <text class="tick" x="${w-mr}" y="${mt+12}" text-anchor="end">R² ${r2.toFixed(2)}</text>`;
+  V.forEach(p=>{const pin=pinned.includes(p.place);
+    g+=`<circle class="pt${pin?" pinned":""}" data-k="${p.place}" cx="${X(p.normal_radiance).toFixed(1)}"
+      cy="${Y(p.val).toFixed(1)}" r="${pin?7:5.5}" fill="${pin? pinColor(p.place):colOf(p.val,sc)}"/>`;});
+  g+=`<line class="axisline" x1="${ml}" y1="${mt+ih}" x2="${w-mr}" y2="${mt+ih}"/>`;
+  scatter.innerHTML=g;
+  scatter.querySelectorAll(".pt").forEach(el=>{
+    const p=V.find(x=>x.place===el.dataset.k);
+    el.addEventListener("mousemove",e=>showTip(e,
+      `<b>${p.city}</b><span>${p.country}<br>Normal ${p.normal_radiance.toFixed(1)} nW/cm²/sr<br>
+       ${m.label}: <b style="display:inline">${m.fmt(p.val)}${m.unit}</b></span>`));
+    el.addEventListener("mouseleave",hideTip);
+    el.addEventListener("click",()=>togglePin(p.place));});
+}
+
+/* ---------- country rollup ---------- */
+function drawCountry(V){
+  const m=M(), w=660,h=340,ml=110,mr=44,mt=16;
+  if(!V.length){ ctry.innerHTML=""; return; }
+  const by={};
+  V.forEach(p=>{(by[p.country]=by[p.country]||[]).push(p);});
+  const rows=Object.entries(by).map(([c,ps])=>({
+    country:c, n:ps.length,
+    mean:ps.reduce((a,p)=>a+p.val,0)/ps.length,
+    lo:Math.min(...ps.map(p=>p.val)), hi:Math.max(...ps.map(p=>p.val))
+  })).sort((a,b)=>b.mean-a.mean);
+  const rowH=Math.max(13,Math.min(20,(300)/rows.length)), H=mt+rows.length*rowH+26;
+  ctry.setAttribute("viewBox",`0 0 ${w} ${H}`);
+  const iw=w-ml-mr, vmax=Math.max(...rows.map(r=>r.hi))*1.05||1, X=v=>ml+(v/vmax)*iw;
+  let g="";
+  for(let k=0;k<=4;k++){const x=ml+iw*k/4;
+    g+=`<line class="gridline" x1="${x}" y1="${mt-4}" x2="${x}" y2="${mt+rows.length*rowH}"/>
+        <text class="tick" x="${x}" y="${mt-9}" text-anchor="middle">${m.axis(vmax*k/4)}</text>`;}
+  rows.forEach((r,i)=>{
+    const y=mt+i*rowH+rowH/2;
+    g+=`<g class="bar" data-c="${r.country}">
+      <rect x="0" y="${mt+i*rowH}" width="${w}" height="${rowH}" fill="transparent"/>
+      <text class="blab" x="${ml-8}" y="${y+3.5}" text-anchor="end">${r.country}</text>`;
+    if(r.n>1) g+=`<line x1="${X(r.lo)}" y1="${y}" x2="${X(r.hi)}" y2="${y}" stroke="${cssv('--axis')}" stroke-width="1.5"/>`;
+    g+=`<circle cx="${X(r.mean)}" cy="${y}" r="5" fill="${cssv('--accent')}" stroke="${cssv('--surface-1')}" stroke-width="1.5"/>
+      <text class="bval" x="${w-mr+6}" y="${y+3.5}">${m.fmt(r.mean)}</text></g>`;});
+  ctry.innerHTML=g;
+  ctry.querySelectorAll(".bar").forEach(el=>{
+    const r=rows.find(x=>x.country===el.dataset.c);
+    el.addEventListener("mousemove",e=>showTip(e,
+      `<b>${r.country}</b><span>${r.n} ${r.n===1?"city":"cities"}<br>
+       Average ${m.fmt(r.mean)}${m.unit}${r.n>1? `<br>Range ${m.fmt(r.lo)} to ${m.fmt(r.hi)}`:""}</span>`));
+    el.addEventListener("mouseleave",hideTip);
+    el.addEventListener("click",()=>{F.country=r.country; fCountry.value=r.country; render();});});
+}
+
+/* ---------- table ---------- */
+let sortKey="val", sortDir=-1;
+const COLS=[
+  {k:"city",t:"City",f:d=>d.city},
+  {k:"country",t:"Country",f:d=>d.country},
+  {k:"region",t:"Region",f:d=>d.region},
+  {k:"normal_radiance",t:"Normal radiance",f:d=>d.normal_radiance.toFixed(1)},
+  {k:"lit_pixels",t:"Lit pixels",f:d=>d.lit_pixels.toLocaleString()},
+  {k:"val",t:"Selected measure",f:d=>M().fmt(d.val),bar:true},
+  {k:"worst_dark_share",t:"Worst night",f:d=>Math.round(d.worst_dark_share*100)+"%"},
+  {k:"n",t:"Nights",f:d=>seriesOf(d).length}];
+function drawTable(V){
+  const thead=document.querySelector("#tbl thead"), tb=document.querySelector("#tbl tbody");
+  thead.innerHTML=`<tr>${COLS.map(c=>`<th data-k="${c.k}">${c.t}${sortKey===c.k?` <span class="ar">${sortDir>0?"▲":"▼"}</span>`:""}</th>`).join("")}</tr>`;
+  const rows=[...V].sort((a,b)=>{
+    const x=sortKey==="n"?seriesOf(a).length:a[sortKey], y=sortKey==="n"?seriesOf(b).length:b[sortKey];
+    return (typeof x==="string"? x.localeCompare(y) : x-y)*sortDir;});
+  const vmax=Math.max(...V.map(p=>p.val))||1;
+  tb.innerHTML=rows.length? rows.map(d=>`<tr class="${pinned.includes(d.place)?"pinned":""}" data-k="${d.place}">
+    ${COLS.map(c=>`<td>${c.bar?`<span class="minibar" style="width:${(28*d.val/vmax).toFixed(0)}px"></span>`:""}${c.f(d)}</td>`).join("")}</tr>`).join("")
+    : `<tr><td colspan="${COLS.length}" class="empty">No cities match these filters.</td></tr>`;
+  thead.querySelectorAll("th").forEach(th=>th.onclick=()=>{
+    if(sortKey===th.dataset.k) sortDir*=-1; else {sortKey=th.dataset.k; sortDir=-1;}
+    render();});
+  tb.querySelectorAll("tr[data-k]").forEach(tr=>
+    tr.querySelector("td").onclick=()=>togglePin(tr.dataset.k));
+}
+csv.onclick=()=>{
+  const V=view();
+  const head=["city","country","region","normal_radiance","lit_pixels","mean_dark_share","worst_dark_share","mean_lit_share","nights"];
+  const body=V.map(d=>[d.city,d.country,d.region,d.normal_radiance,d.lit_pixels,
+    d.mean_dark_share,d.worst_dark_share,d.mean_lit_share,seriesOf(d).length]
+    .map(v=>typeof v==="string"&&v.includes(",")?`"${v}"`:v).join(","));
+  const url=URL.createObjectURL(new Blob([[head.join(","),...body].join("\n")],{type:"text/csv"}));
+  const a=document.createElement("a"); a.href=url; a.download="gridtruth-cities.csv"; a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* ---------- render ---------- */
+function render(){
+  const V=view();
+  drawChips(V); drawKpis(V); drawMap(V); drawRank(V);
+  drawTS(V); drawHeat(V); drawScatter(V); drawCountry(V); drawTable(V);
+}
+render();
+matchMedia("(prefers-color-scheme:dark)").addEventListener("change",render);
+</script>
+</body>
+</html>
