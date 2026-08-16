@@ -5,12 +5,12 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 from . import __version__
 from .fetch import fetch, visible_text
-from .parse import parse_notices
+from .parse import HARARE, parse_notices
 from .sources import SOURCES
 from .store import NoticeStore
 
@@ -28,7 +28,7 @@ def run_once(*, dry_run: bool = False) -> int:
         entry = {"source": source.id, "url": source.url}
         try:
             got = fetch(source.url, RAW_DIR)
-        except Exception as exc:  # noqa: BLE001 - one bad source must not kill the run
+        except Exception as exc:
             entry |= {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
             report.append(entry)
             continue
@@ -38,7 +38,7 @@ def run_once(*, dry_run: bool = False) -> int:
             source_id=source.id,
             source_url=source.url,
             snapshot_sha256=got.sha256,
-            fallback_date=datetime.now(timezone.utc),
+            fallback_date=datetime.now(HARARE),
         )
         added = [] if dry_run else store.append_new(result.notices)
         total_new += len(added)

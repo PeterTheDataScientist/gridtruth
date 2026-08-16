@@ -9,18 +9,27 @@ from a run where the page genuinely had none.
 
 from __future__ import annotations
 
+import contextlib
 import re
 import unicodedata
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from dateutil import parser as dateparser
 
 from .models import Notice
 
+# Zimbabwe is UTC+2 year round, no daylight saving. Notices are published in
+# local time; NASA granules are in UTC. Every datetime in this project is
+# timezone-aware so that join is never silently wrong.
+HARARE = timezone(timedelta(hours=2))
+
 # Time ranges as they actually appear: "0500-0900", "05:00 - 09:00", "5am to 9am".
 _TIME_RANGE = re.compile(
-    r"(?P<h1>\d{1,2})[:.]?(?P<m1>\d{2})?\s*(?P<ap1>am|pm)?\s*(?:-|to|–|until)\s*"
+    # The en dash is written as an escape because real notices use it as a range
+    # separator, so the parser must match it, but a literal one in source is
+    # visually ambiguous with a hyphen.
+    r"(?P<h1>\d{1,2})[:.]?(?P<m1>\d{2})?\s*(?P<ap1>am|pm)?\s*(?:-|to|\u2013|until)\s*"
     r"(?P<h2>\d{1,2})[:.]?(?P<m2>\d{2})?\s*(?P<ap2>am|pm)?",
     re.IGNORECASE,
 )
@@ -95,7 +104,10 @@ def parse_notices(
 
     `fallback_date` is used when a line gives a time range but no date, which is
     common in notices that carry one date in a heading and times in a table below.
+    It must be timezone-aware; a naive value is interpreted as Harare local time.
     """
+    if fallback_date is not None and fallback_date.tzinfo is None:
+        fallback_date = fallback_date.replace(tzinfo=HARARE)
     notices: list[Notice] = []
     unparsed: list[str] = []
     current_date = fallback_date
@@ -107,17 +119,16 @@ def parse_notices(
 
         date_match = _DATE_HINT.search(line)
         if date_match:
-            try:
-                current_date = dateparser.parse(date_match.group(1), dayfirst=True)
-            except (ValueError, OverflowError):
-                pass
+            with contextlib.suppress(ValueError, OverflowError):
+                parsed = dateparser.parse(date_match.group(1), dayfirst=True)
+                current_date = parsed.replace(tzinfo=parsed.tzinfo or HARARE)
 
         time_match = _TIME_RANGE.search(line)
         if not time_match:
             # Text with no time range. Almost always the area name from the cell
             # before the time cell, because HTML tables flatten to one cell per
             # line. Held as a candidate for the next line that does carry a time.
-            candidate = _DATE_HINT.sub("", line).strip(" -–:\t|")
+            candidate = _DATE_HINT.sub("", line).strip(" -\u2013:\t|")
             pending_area = candidate if _plausible_area(candidate) else None
             continue
 
@@ -127,7 +138,7 @@ def parse_notices(
             continue
 
         area = _TIME_RANGE.sub("", line)
-        area = _DATE_HINT.sub("", area).strip(" -–:\t|")
+        area = _DATE_HINT.sub("", area).strip(" -\u2013:\t|")
         if not _plausible_area(area):
             # Time range on its own line. Pair it with the area seen just before.
             if pending_area is None:

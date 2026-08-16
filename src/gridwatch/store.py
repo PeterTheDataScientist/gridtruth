@@ -8,8 +8,8 @@ diff shows only genuinely new records, not a reshuffle).
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from .models import Notice
 
@@ -33,7 +33,9 @@ class NoticeStore:
                 except (json.JSONDecodeError, KeyError):
                     # A corrupt line must not silently drop the dedup set, which
                     # would cause every subsequent record to be re-appended.
-                    raise ValueError(f"corrupt record in {self.path}: {line[:120]!r}")
+                    raise ValueError(
+                        f"corrupt record in {self.path}: {line[:120]!r}"
+                    ) from None
         return ids
 
     def append_new(self, notices: Iterable[Notice]) -> list[Notice]:
