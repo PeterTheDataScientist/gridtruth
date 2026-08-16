@@ -1,0 +1,87 @@
+name: collect
+
+# The archive publishes roughly four months behind, so there is nothing to gain
+# from checking often. Weekly, at an odd minute because scheduled runs at the top
+# of the hour queue across all of GitHub and can drift by half an hour.
+on:
+  schedule:
+    - cron: "37 2 * * 1"
+  workflow_dispatch:
+    inputs:
+      dates:
+        description: "Comma-separated YYYYMMDD to collect (blank = auto, recent new moons)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+
+      - name: Install
+        run: pip install rasterio numpy
+
+      # Pixel arrays are far too large for git. They live in the Actions cache so
+      # a method change is a re-aggregation rather than a re-download. If the
+      # cache is evicted the next run simply re-fetches; nothing is lost but time.
+      - name: Restore pixel cache
+        uses: actions/cache@v4
+        with:
+          path: pixels.npz
+          key: pixels-${{ github.run_id }}
+          restore-keys: pixels-
+
+      - name: Choose dates
+        id: dates
+        run: |
+          if [ -n "${{ inputs.dates }}" ]; then
+            echo "list=${{ inputs.dates }}" >> $GITHUB_OUTPUT
+          else
+            python - <<'PY' >> $GITHUB_OUTPUT
+          from datetime import date, timedelta
+          REF, SYN = date(2000,1,6), 29.530588853
+          # Archive lags ~4 months. Look back 18 months and let extract.py skip
+          # anything already collected.
+          end = date.today() - timedelta(days=120)
+          start = end - timedelta(days=540)
+          picks, d = [], start
+          while d <= end:
+              p = (((d-REF).days) % SYN)/SYN
+              if p < 0.06 or p > 0.94:
+                  picks.append(d.strftime("%Y%m%d")); d += timedelta(days=20)
+              else:
+                  d += timedelta(days=1)
+          print("list=" + ",".join(picks))
+          PY
+          fi
+
+      - name: Extract
+        run: python pipeline/extract.py pipeline/places.json "${{ steps.dates.outputs.list }}" pixels.npz
+
+      - name: Aggregate
+        run: python pipeline/aggregate.py pixels.npz pipeline/places.json data/places.json
+
+      - name: Commit derived data
+        run: |
+          if [ -z "$(git status --porcelain data/)" ]; then echo "no change"; exit 0; fi
+          git config user.name "gridtruth-bot"
+          git config user.email "noreply@github.com"
+          git add data/
+          git commit -m "data: collect $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: Heartbeat
+        if: success() && env.HEARTBEAT_URL != ''
+        env:
+          HEARTBEAT_URL: ${{ secrets.HEARTBEAT_URL }}
+        run: curl -fsS --max-time 10 "$HEARTBEAT_URL" || true
