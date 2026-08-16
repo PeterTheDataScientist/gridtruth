@@ -11,7 +11,7 @@ import json
 from collections.abc import Iterable
 from pathlib import Path
 
-from .models import Notice
+from .models import Notice, RunRecord
 
 
 class NoticeStore:
@@ -50,6 +50,29 @@ class NoticeStore:
                 seen.add(n.record_id)
                 added.append(n)
         return added
+
+    def count(self) -> int:
+        if not self.path.exists():
+            return 0
+        with self.path.open(encoding="utf-8") as fh:
+            return sum(1 for line in fh if line.strip())
+
+
+class RunStore:
+    """Append-only log of monitoring runs. No dedup: every check is a distinct
+    observation, and the gaps between them are as informative as the records."""
+
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def append(self, runs: Iterable[RunRecord]) -> int:
+        n = 0
+        with self.path.open("a", encoding="utf-8") as fh:
+            for r in runs:
+                fh.write(r.to_json() + "\n")
+                n += 1
+        return n
 
     def count(self) -> int:
         if not self.path.exists():

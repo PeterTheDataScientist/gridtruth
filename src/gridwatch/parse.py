@@ -92,6 +92,43 @@ def _to_time(h: str, m: str | None, ap: str | None) -> tuple[int, int]:
     return hour % 24, minute
 
 
+def _match_time_range(line: str) -> re.Match[str] | None:
+    """Find a time range in a line, or None.
+
+    The regex alone is far too permissive: it happily reads "60-70%" out of a
+    sentence about geyser consumption, and `% 24` then turns that into a
+    plausible-looking 12:00 to 22:00 outage. That exact false positive was the
+    only record produced by the first run against the live ZETDC site, so this
+    validation is not defensive programming, it is load bearing.
+
+    A bare small-number range ("3-4", "60-70") is only a time if it says so:
+    either a colon or full stop separator, an am/pm marker, or the 4-digit HHMM
+    form that utility notices use ("0500-0900").
+    """
+    for m in _TIME_RANGE.finditer(line):
+        tail = line[m.end() : m.end() + 1]
+        if tail == "%":
+            continue
+
+        explicit = bool(m["m1"] or m["m2"] or m["ap1"] or m["ap2"])
+        if not explicit:
+            continue
+
+        try:
+            _, mi1 = _to_time(m["h1"], m["m1"], m["ap1"])
+            _, mi2 = _to_time(m["h2"], m["m2"], m["ap2"])
+        except ValueError:
+            continue
+
+        # _to_time wraps the hour, so check the written value, not the wrapped one.
+        if int(m["h1"]) > 23 or int(m["h2"]) > 23:
+            continue
+        if mi1 > 59 or mi2 > 59:
+            continue
+        return m
+    return None
+
+
 def parse_notices(
     text: str,
     *,
@@ -123,7 +160,7 @@ def parse_notices(
                 parsed = dateparser.parse(date_match.group(1), dayfirst=True)
                 current_date = parsed.replace(tzinfo=parsed.tzinfo or HARARE)
 
-        time_match = _TIME_RANGE.search(line)
+        time_match = _match_time_range(line)
         if not time_match:
             # Text with no time range. Almost always the area name from the cell
             # before the time cell, because HTML tables flatten to one cell per

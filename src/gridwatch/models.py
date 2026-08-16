@@ -17,6 +17,18 @@ from typing import Any
 SCHEMA_VERSION = 1
 
 
+def _iso(value: Any) -> Any:
+    """JSON serialiser that emits strict ISO 8601 for datetimes.
+
+    `default=str` gives "2026-08-16 16:06:06+00:00" with a space, which several
+    parsers including older JavaScript engines reject. The dashboard reads this
+    file directly, so the separator matters.
+    """
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    return str(value)
+
+
 def _canonical(payload: dict[str, Any]) -> str:
     """Stable JSON for hashing. Sorted keys, no whitespace, no volatile fields."""
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
@@ -74,7 +86,7 @@ class Notice:
     def to_json(self) -> str:
         d = asdict(self)
         d["record_id"] = self.record_id
-        return json.dumps(d, sort_keys=True, default=str)
+        return json.dumps(d, sort_keys=True, default=_iso)
 
 
 @dataclass(slots=True)
@@ -103,4 +115,32 @@ class Observation:
     schema_version: int = SCHEMA_VERSION
 
     def to_json(self) -> str:
-        return json.dumps(asdict(self), sort_keys=True, default=str)
+        return json.dumps(asdict(self), sort_keys=True, default=_iso)
+
+
+@dataclass(slots=True)
+class RunRecord:
+    """One monitoring observation: what a source looked like at a point in time.
+
+    This is the record that accumulates from day one. Notices may stay at zero
+    for a long time, because as of the first live run ZETDC published no
+    machine-readable schedule anywhere on its website. "Checked, and there was
+    nothing there" is itself the finding, and it is only credible if it is
+    recorded continuously rather than asserted once.
+    """
+
+    checked_at: datetime
+    source_id: str
+    url: str
+    ok: bool
+    http_status: int | None
+    snapshot_sha256: str | None
+    content_changed: bool
+    notices_parsed: int
+    notices_new: int
+    unparsed_blocks: int
+    error: str | None = None
+    schema_version: int = SCHEMA_VERSION
+
+    def to_json(self) -> str:
+        return json.dumps(asdict(self), sort_keys=True, default=_iso)
