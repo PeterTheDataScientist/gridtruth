@@ -1,0 +1,31 @@
+[project]
+name = "gridwatch-zw"
+version = "0.1.0"
+description = "Verifying Zimbabwe load shedding announcements against satellite night lights"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Peter Tinashe Mundowa" }]
+dependencies = [
+    "httpx>=0.27",
+    "selectolax>=0.3.21",
+    "python-dateutil>=2.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6"]
+
+[project.scripts]
+gridwatch = "gridwatch.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
