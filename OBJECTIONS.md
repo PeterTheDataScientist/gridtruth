@@ -75,3 +75,18 @@ If the sensitivity turns out to be large, the finding is that the method is unre
 **The answer.** Which is why the refresh loop is infrastructure rather than intention. Ingestion runs on GitHub Actions, which is free and unlimited on public repositories and needs no server anyone has to remember to pay for. A heartbeat monitor fires if a scheduled run does not complete, so a silent failure becomes a loud one. The dataset is append-only in git, so a gap is visible in the history rather than hidden.
 
 That does not guarantee it survives. It does mean that if it stops, everyone can see exactly when and how much data exists, which is more than most projects offer.
+
+
+---
+
+## 10. "There is nothing to archive. Your premise is false."
+
+**The objection.** The project is built on ZETDC publishing schedules. It does not. The archive will be empty forever, and an empty archive is not a dataset.
+
+**The concession.** Correct on the facts, and it was confirmed by the project's own first live run rather than by a critic. There is no machine-readable schedule on ZETDC's website. The notices file is empty and may stay empty.
+
+**The answer.** The absence is the finding, and recording it continuously is what makes it evidence rather than an anecdote. "I looked once and did not see a schedule" is worth nothing. "Three sources, checked every six hours, no schedule published across N months, here is every timestamped observation" is a documented accountability gap that nobody else has established.
+
+More importantly, it removes the project's dependence on the utility entirely. The satellite layer was originally a way to check announcements. It is now the only way to observe load shedding in Zimbabwe at all, which makes it necessary rather than clever. A cut that is never announced and never recorded did not happen, as far as any dataset in the world is concerned. That is the thing worth fixing.
+
+**What would change my mind.** If schedules turn out to be published somewhere this project is not watching, for example a social account or a regional office, then the monitoring premise is not false, just badly aimed, and the fix is to widen coverage. That is why the public page asks directly for anyone who knows where schedules are actually published to open an issue.

@@ -32,3 +32,27 @@ An honest log. Added to as things break, not written retrospectively once everyt
 2. The ruff version is pinned and the rule set is named explicitly in `pyproject.toml` rather than inherited from whatever defaults the resolved version happens to ship. DTZ is in that set on purpose, with a comment saying why.
 
 **The lesson.** An unpinned linter is a linter whose behaviour is decided by the release calendar. But the CI failure was still worth having: a stricter environment than the local one found a genuine bug on the first run, before a single real record had been written. Do not treat a red CI as noise to be silenced.
+
+
+---
+
+## The first live run produced exactly one record, and it was a sentence about geysers
+
+**What was tried.** Point the parser at the three ZETDC pages and see what comes back.
+
+**What happened.** Two pages produced nothing. The load shedding FAQ produced one notice:
+
+> area: "Why are bills not going down despite all the shedding?"
+> window: 2026-08-16 12:00 to 22:00 (+02:00)
+
+The source line was a paragraph explaining that a geyser "contributes about 60-70% of the total bill". The time-range regex matched `60-70`, and `_to_time` wrapped it with `% 24` into a perfectly plausible 12:00 to 22:00 outage window. Nothing in the record looked malformed. It would have gone into a public dataset and stayed there.
+
+**Why it happened.** The regex was written to be permissive so that unusual real formats would still match, and there was no validation step behind it. `page 3-4`, `sections 1-2` and any percentage range would all have produced outages.
+
+**The fix.** A validation pass between matching and accepting. A bare small-number range is only a time if it says so: a colon or full stop, an am/pm marker, or the 4-digit HHMM form utility notices use. A range followed by `%` is rejected outright. Written hours above 23 and minutes above 59 are rejected before wrapping, not after. The real FAQ paragraph is now a regression test, verbatim.
+
+**The second finding, which matters more than the bug.** With the false positive gone, the live run returns **zero notices from all three sources**, and mining the page links confirms why: ZETDC publishes no load shedding schedule anywhere on its website. The premise the project was built on, "the utility publishes notices we can archive", is false.
+
+That is not a reason to stop. It reframes the work. An archive of announcements nobody makes is worthless, but a continuous public record showing that no schedule is published, alongside satellite observation of the cuts that happen regardless, is a stronger artefact than the original plan. The monitoring log became the primary dataset and the public page leads with the absence rather than hiding it.
+
+**The lesson.** Test against the real source early, before building anything on top of an assumption about it. A synthetic fixture proved the parser worked. Only the live run proved there was nothing to parse.
