@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6"]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff==0.15.11"]
 
 [project.scripts]
 gridwatch = "gridwatch.cli:main"
@@ -25,6 +25,15 @@ build-backend = "setuptools.build_meta"
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+[tool.ruff.lint]
+# Selected explicitly rather than relying on ruff's defaults, which change
+# between releases. A lint run that passes locally and fails on CI because the
+# two resolved different versions is a waste of everyone's time, so the version
+# is pinned above and the rule set is named here.
+#   DTZ: naive datetimes. This project joins Harare local time to UTC satellite
+#        granules, so a naive datetime is a real bug waiting to happen.
+select = ["E", "F", "I", "UP", "B", "SIM", "DTZ", "RUF"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
