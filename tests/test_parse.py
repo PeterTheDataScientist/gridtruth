@@ -105,3 +105,79 @@ def test_line_with_time_but_no_date_is_reported_not_dropped():
     )
     assert res.notices == []
     assert res.unparsed == ["Avondale 0600-1000"]
+
+
+# Regression cases from the first run against the live ZETDC site, which
+# produced exactly one record and it was garbage. Kept verbatim.
+
+REAL_FAQ_LINE = (
+    "In a domestic household the geyser normally contributes about 60-70% of the "
+    "total bill.  The stove and heating requirements in winter normally contribute "
+    "another 15-20%.  The balance is used for lighting, pumping and other uses."
+)
+
+
+def test_percentages_in_prose_are_not_outage_windows():
+    """The live FAQ page turned '60-70%' into a 12:00 to 22:00 outage."""
+    res = parse_notices(
+        REAL_FAQ_LINE,
+        source_id="test",
+        source_url="https://example.invalid",
+        snapshot_sha256="x",
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
+    )
+    assert res.notices == []
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "page 3-4",
+        "about 60-70",
+        "contributes 15-20% of the bill",
+        "sections 1-2 apply",
+    ],
+)
+def test_bare_number_ranges_are_rejected(line):
+    res = parse_notices(
+        line,
+        source_id="test",
+        source_url="https://example.invalid",
+        snapshot_sha256="x",
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
+    )
+    assert res.notices == []
+
+
+@pytest.mark.parametrize(
+    ("line", "expected_hours"),
+    [
+        ("Avondale 0500-0900", (5, 9)),
+        ("Avondale 05:00 - 09:00", (5, 9)),
+        ("Avondale 9am to 1pm", (9, 13)),
+        ("Avondale 1300 - 1700", (13, 17)),
+    ],
+)
+def test_real_time_formats_still_parse(line, expected_hours):
+    res = parse_notices(
+        line,
+        source_id="test",
+        source_url="https://example.invalid",
+        snapshot_sha256="x",
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
+    )
+    assert len(res.notices) == 1
+    n = res.notices[0]
+    assert (n.starts_at.hour, n.ends_at.hour) == expected_hours
+
+
+@pytest.mark.parametrize("line", ["Avondale 25:00-26:00", "Avondale 09:75 - 10:80"])
+def test_impossible_clock_values_are_rejected(line):
+    res = parse_notices(
+        line,
+        source_id="test",
+        source_url="https://example.invalid",
+        snapshot_sha256="x",
+        fallback_date=datetime(2026, 8, 14, tzinfo=HARARE),
+    )
+    assert res.notices == []
