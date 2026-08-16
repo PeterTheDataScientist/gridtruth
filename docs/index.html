@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en-ZW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GridWatch ZW — is anyone publishing Zimbabwe's load shedding schedule?</title>
+<meta name="description" content="Continuous monitoring of whether ZETDC publishes a machine-readable load shedding schedule, and satellite verification of outages that were never announced.">
+<style>
+  /* No web fonts on purpose. This page is read by people whose power is out,
+     on mobile data, often on a cheap Android. Every kilobyte is a decision. */
+  :root{
+    --paper:#f7f4ee; --ink:#1c1b18; --ink-2:#4a473f; --ink-3:#78736a;
+    --rule:#ddd7ca; --rule-2:#eae4d8; --clay:#9c4221; --moss:#3d5245;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--paper:#14140f; --ink:#f0ece2; --ink-2:#c3bdaf; --ink-3:#8d8778;
+          --rule:#33322a; --rule-2:#26251f; --clay:#d98055; --moss:#8fb39d;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.6;
+       font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  a{color:var(--clay)}
+  h1{font:500 clamp(30px,7vw,50px)/1.05 ui-serif,Georgia,"Times New Roman",serif;
+     letter-spacing:-.02em;margin:14px 0 12px}
+  h2{font:500 clamp(21px,4vw,27px)/1.2 ui-serif,Georgia,serif;letter-spacing:-.01em;margin:0 0 10px}
+  .kicker{font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+          letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+  header{border-bottom:2px solid var(--ink);padding-top:36px;padding-bottom:20px}
+  .dek{font:clamp(16px,3.4vw,19px)/1.5 ui-serif,Georgia,serif;color:var(--ink-2);margin:0;max-width:60ch}
+  section{padding:36px 0;border-bottom:1px solid var(--rule)}
+  section:last-of-type{border-bottom:0}
+
+  .headline{border:1px solid var(--rule);padding:22px;margin:4px 0 0}
+  .headline .big{font:500 clamp(34px,9vw,58px)/1 ui-serif,Georgia,serif;color:var(--clay);display:block}
+  .headline .cap{font-size:15px;color:var(--ink-2);margin-top:8px;display:block;max-width:52ch}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+         gap:0;border-top:1px solid var(--rule);margin-top:26px}
+  .stat{padding:16px 16px 16px 0;border-bottom:1px solid var(--rule)}
+  .stat b{display:block;font:500 27px/1 ui-serif,Georgia,serif;margin-bottom:5px}
+  .stat span{font-size:13px;color:var(--ink-3)}
+
+  blockquote{margin:0;padding:0 0 0 18px;border-left:2px solid var(--clay)}
+  blockquote p{margin:0 0 8px;font:clamp(16px,3.4vw,19px)/1.45 ui-serif,Georgia,serif}
+  blockquote cite{font-size:13px;color:var(--ink-3);font-style:normal}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
+  th{text-align:left;font:500 10.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.12em;
+     text-transform:uppercase;color:var(--ink-3);padding:0 10px 9px 0;border-bottom:1px solid var(--ink)}
+  td{padding:11px 10px 11px 0;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top}
+  td:first-child{color:var(--ink)}
+  .ok{color:var(--moss)} .bad{color:var(--clay)}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+
+  ul{padding-left:18px} li{margin-bottom:8px;color:var(--ink-2)}
+  footer{padding:30px 0 60px;font-size:13px;color:var(--ink-3)}
+  .err{border:1px solid var(--clay);padding:14px;font-size:14px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">GridWatch ZW &middot; open data &middot; updated automatically</div>
+  <h1>Nobody publishes Zimbabwe's load shedding schedule.</h1>
+  <p class="dek">Not on ZETDC's website, anyway. This page checks, continuously, and records what it finds. When a schedule does appear it will be archived here permanently.</p>
+</header>
+
+<section>
+  <div class="headline" id="headline">
+    <span class="big" id="bigNumber">&hellip;</span>
+    <span class="cap" id="bigCaption">Loading the monitoring record&hellip;</span>
+  </div>
+  <div class="stats" id="stats"></div>
+</section>
+
+<section>
+  <h2>Why this exists</h2>
+  <p style="color:var(--ink-2);max-width:62ch">ZETDC's own load shedding FAQ answers the question "Why is ZETDC not sticking to the schedules it advertised?" like this:</p>
+  <blockquote>
+    <p>&ldquo;&hellip;loading will be done outside the programme without notice.&rdquo;</p>
+    <cite>ZETDC, Load Shedding FAQs</cite>
+  </blockquote>
+  <p style="color:var(--ink-2);max-width:62ch;margin-top:16px">So the utility states plainly that unannounced load shedding happens. It does not publish the programme those cuts depart from, and no public record exists of how often reality and announcement diverge.</p>
+  <p style="color:var(--ink-2);max-width:62ch">That is the gap. An announcement you cannot check is not accountability, and a cut nobody recorded did not happen as far as any dataset is concerned. The next stage of this project measures the cuts directly, from satellite night lights, so the observation does not depend on the utility publishing anything at all.</p>
+</section>
+
+<section>
+  <h2>Sources being watched</h2>
+  <table>
+    <thead><tr><th>Source</th><th>Last check</th><th>Status</th><th>Notices found</th></tr></thead>
+    <tbody id="sources"><tr><td colspan="4" style="color:var(--ink-3)">Loading&hellip;</td></tr></tbody>
+  </table>
+  <p style="font-size:13.5px;color:var(--ink-3);margin-top:14px">Every check is recorded, including the ones that find nothing. A run that returns zero notices is a measurement, not a failure, and it is only credible because it is recorded continuously rather than asserted once.</p>
+</section>
+
+<section>
+  <h2>Schedules archived so far</h2>
+  <table>
+    <thead><tr><th>Area</th><th>From</th><th>To</th><th>Source</th></tr></thead>
+    <tbody id="notices"><tr><td colspan="4" style="color:var(--ink-3)">Loading&hellip;</td></tr></tbody>
+  </table>
+</section>
+
+<section>
+  <h2>What this does not do yet</h2>
+  <ul>
+    <li><b>It cannot tell you if your power is about to go off.</b> No schedule is published to tell you from.</li>
+    <li><b>The satellite verification is not built yet.</b> The method, its failure modes and a pre-registered accuracy gate are written up in <a href="https://github.com/PeterTheDataScientist/gridwatch-zw/blob/main/DESIGN.md">DESIGN.md</a> and <a href="https://github.com/PeterTheDataScientist/gridwatch-zw/blob/main/EVALUATION.md">EVALUATION.md</a>, before any result exists.</li>
+    <li><b>Crowdsourced reports are not open yet.</b> When they are, they will be one signal of three, never a ground truth.</li>
+    <li><b>Coverage is three ZETDC pages.</b> If you know where schedules are actually published, that is the single most useful thing you could tell this project. <a href="https://github.com/PeterTheDataScientist/gridwatch-zw/issues">Open an issue.</a></li>
+  </ul>
+</section>
+
+<footer>
+  Code <a href="https://github.com/PeterTheDataScientist/gridwatch-zw/blob/main/LICENSE">Apache 2.0</a>.
+  Data <a href="https://github.com/PeterTheDataScientist/gridwatch-zw/blob/main/data/LICENSE">CC BY 4.0</a>.
+  Anyone may use either, commercially, without asking.
+  <br>Built by <a href="https://petermundowa.com">Peter Tinashe Mundowa</a> in Harare.
+  <a href="https://github.com/PeterTheDataScientist/gridwatch-zw">Source and raw data on GitHub.</a>
+</footer>
+
+</div>
+
+<script>
+const BASE = "https://raw.githubusercontent.com/PeterTheDataScientist/gridwatch-zw/main/data/processed/";
+
+async function jsonl(name){
+  const r = await fetch(BASE + name, {cache:"no-store"});
+  if (r.status === 404) return [];          // file not created yet, not an error
+  if (!r.ok) throw new Error(name + ": HTTP " + r.status);
+  const text = await r.text();
+  return text.split("\n").filter(l => l.trim()).map(l => JSON.parse(l));
+}
+
+const fmtDate = iso => new Date(iso).toLocaleString("en-GB",
+  {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit", timeZone:"Africa/Harare"});
+
+function daysBetween(a, b){
+  return Math.max(0, Math.floor((new Date(b) - new Date(a)) / 86400000));
+}
+
+function render(runs, notices){
+  const big = document.getElementById("bigNumber");
+  const cap = document.getElementById("bigCaption");
+
+  if (!runs.length){
+    big.textContent = "0";
+    cap.textContent = "No monitoring runs recorded yet. The pipeline publishes its first observations within six hours of going live.";
+  } else {
+    const stamps = runs.map(r => r.checked_at).sort();
+    const days = daysBetween(stamps[0], stamps[stamps.length - 1]);
+    if (notices.length === 0){
+      big.textContent = days === 0 ? "Day one" : days + (days === 1 ? " day" : " days");
+      cap.textContent = days === 0
+        ? "Monitoring started today. No machine-readable load shedding schedule found on any watched ZETDC page so far."
+        : "of continuous monitoring, and no machine-readable load shedding schedule has appeared on any watched ZETDC page.";
+    } else {
+      big.textContent = notices.length;
+      cap.textContent = "scheduled outage windows archived since monitoring began.";
+    }
+  }
+
+  // Summary tiles
+  const stamps = runs.map(r => r.checked_at).sort();
+  const okRate = runs.length ? Math.round(100 * runs.filter(r => r.ok).length / runs.length) : 0;
+  const tiles = [
+    [runs.length, "checks recorded"],
+    [new Set(runs.map(r => r.source_id)).size, "sources watched"],
+    [notices.length, "outage windows archived"],
+    [okRate + "%", "checks that reached the site"],
+  ];
+  document.getElementById("stats").innerHTML = tiles
+    .map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+
+  // Latest state per source
+  const latest = new Map();
+  for (const r of runs){
+    const prev = latest.get(r.source_id);
+    if (!prev || r.checked_at > prev.checked_at) latest.set(r.source_id, r);
+  }
+  const rows = [...latest.values()].sort((a,b) => a.source_id.localeCompare(b.source_id));
+  document.getElementById("sources").innerHTML = rows.length ? rows.map(r => `
+    <tr>
+      <td><a href="${r.url}" rel="nofollow noopener">${r.source_id}</a></td>
+      <td class="mono">${fmtDate(r.checked_at)}</td>
+      <td class="${r.ok ? "ok" : "bad"}">${r.ok ? "HTTP " + r.http_status : "unreachable"}</td>
+      <td>${r.notices_parsed}</td>
+    </tr>`).join("")
+    : `<tr><td colspan="4" style="color:var(--ink-3)">No checks recorded yet.</td></tr>`;
+
+  // Archived notices, most recent first
+  const recent = [...notices].sort((a,b) => b.starts_at.localeCompare(a.starts_at)).slice(0, 100);
+  document.getElementById("notices").innerHTML = recent.length ? recent.map(n => `
+    <tr>
+      <td>${n.area}</td>
+      <td class="mono">${fmtDate(n.starts_at)}</td>
+      <td class="mono">${fmtDate(n.ends_at)}</td>
+      <td class="mono">${n.source_id}</td>
+    </tr>`).join("")
+    : `<tr><td colspan="4" style="color:var(--ink-3)">None. That is the finding, not a bug.</td></tr>`;
+}
+
+(async () => {
+  try {
+    const [runs, notices] = await Promise.all([jsonl("runs.jsonl"), jsonl("notices.jsonl")]);
+    render(runs, notices);
+  } catch (e) {
+    document.getElementById("headline").innerHTML =
+      `<div class="err"><b>Could not load the dataset.</b><br>${e.message}<br>
+       The raw data is always available at
+       <a href="https://github.com/PeterTheDataScientist/gridwatch-zw/tree/main/data/processed">github.com/PeterTheDataScientist/gridwatch-zw</a>.</div>`;
+  }
+})();
+</script>
+</body>
+</html>
