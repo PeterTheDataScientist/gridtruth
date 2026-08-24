@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-17",
+ "generated": "2026-08-24",
  "method": "Each city's lit footprint is derived from the 90th-percentile envelope of its own observations. dark_share is the fraction of that footprint falling below half its own normal level on a given night. Cities are never compared on absolute brightness.",
  "params": {
   "envelope_pctl": 90,
@@ -768,122 +768,130 @@
    "country": "Nigeria",
    "lon": 7.49,
    "lat": 9.06,
-   "lit_pixels": 2546,
-   "normal_radiance": 18.63,
-   "mean_dark_share": 0.466,
-   "worst_dark_share": 0.923,
-   "mean_lit_share": 0.572,
-   "n": 14,
+   "lit_pixels": 2526,
+   "normal_radiance": 19.29,
+   "mean_dark_share": 0.462,
+   "worst_dark_share": 0.932,
+   "mean_lit_share": 0.575,
+   "n": 15,
    "series": [
     {
      "date": "20241031",
-     "lit_share": 0.512,
-     "dark_share": 0.526,
-     "mean_radiance": 10.84,
+     "lit_share": 0.5,
+     "dark_share": 0.553,
+     "mean_radiance": 10.91,
      "moon": 0.97,
      "coverage": 1.0
     },
     {
+     "date": "20241102",
+     "lit_share": 0.813,
+     "dark_share": 0.11,
+     "mean_radiance": 16.79,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
      "date": "20241129",
-     "lit_share": 0.949,
-     "dark_share": 0.023,
-     "mean_radiance": 20.17,
+     "lit_share": 0.943,
+     "dark_share": 0.025,
+     "mean_radiance": 20.28,
      "moon": 0.952,
      "coverage": 1.0
     },
     {
      "date": "20241229",
-     "lit_share": 0.627,
-     "dark_share": 0.256,
-     "mean_radiance": 12.31,
+     "lit_share": 0.61,
+     "dark_share": 0.274,
+     "mean_radiance": 12.4,
      "moon": 0.968,
      "coverage": 1.0
     },
     {
      "date": "20250127",
-     "lit_share": 0.874,
-     "dark_share": 0.052,
-     "mean_radiance": 17.03,
+     "lit_share": 0.854,
+     "dark_share": 0.061,
+     "mean_radiance": 17.09,
      "moon": 0.95,
      "coverage": 1.0
     },
     {
      "date": "20250226",
-     "lit_share": 0.449,
-     "dark_share": 0.673,
-     "mean_radiance": 7.62,
+     "lit_share": 0.435,
+     "dark_share": 0.715,
+     "mean_radiance": 7.65,
      "moon": 0.966,
      "coverage": 1.0
     },
     {
      "date": "20250327",
-     "lit_share": 0.454,
-     "dark_share": 0.648,
-     "mean_radiance": 8.37,
+     "lit_share": 0.441,
+     "dark_share": 0.675,
+     "mean_radiance": 8.4,
      "moon": 0.948,
      "coverage": 1.0
     },
     {
      "date": "20250426",
-     "lit_share": 0.36,
-     "dark_share": 0.869,
-     "mean_radiance": 6.58,
+     "lit_share": 0.348,
+     "dark_share": 0.895,
+     "mean_radiance": 6.6,
      "moon": 0.964,
      "coverage": 1.0
     },
     {
      "date": "20250525",
-     "lit_share": 0.335,
-     "dark_share": 0.864,
-     "mean_radiance": 5.37,
+     "lit_share": 0.325,
+     "dark_share": 0.876,
+     "mean_radiance": 5.39,
      "moon": 0.946,
      "coverage": 1.0
     },
     {
      "date": "20250624",
-     "lit_share": 0.595,
-     "dark_share": 0.362,
-     "mean_radiance": 10.63,
+     "lit_share": 0.58,
+     "dark_share": 0.389,
+     "mean_radiance": 10.68,
      "moon": 0.962,
      "coverage": 1.0
     },
     {
      "date": "20250723",
-     "lit_share": 0.283,
-     "dark_share": 0.923,
-     "mean_radiance": 4.7,
+     "lit_share": 0.274,
+     "dark_share": 0.932,
+     "mean_radiance": 4.71,
      "moon": 0.944,
      "coverage": 1.0
     },
     {
      "date": "20250822",
-     "lit_share": 0.636,
-     "dark_share": 0.257,
-     "mean_radiance": 10.81,
+     "lit_share": 0.619,
+     "dark_share": 0.289,
+     "mean_radiance": 10.84,
      "moon": 0.959,
      "coverage": 1.0
     },
     {
      "date": "20250920",
-     "lit_share": 0.38,
-     "dark_share": 0.793,
-     "mean_radiance": 5.98,
+     "lit_share": 0.368,
+     "dark_share": 0.816,
+     "mean_radiance": 5.99,
      "moon": 0.942,
      "coverage": 1.0
     },
     {
      "date": "20251020",
-     "lit_share": 0.849,
-     "dark_share": 0.094,
-     "mean_radiance": 17.7,
+     "lit_share": 0.832,
+     "dark_share": 0.116,
+     "mean_radiance": 17.78,
      "moon": 0.957,
      "coverage": 1.0
     },
     {
      "date": "20251218",
-     "lit_share": 0.703,
-     "dark_share": 0.18,
-     "mean_radiance": 12.86,
+     "lit_share": 0.685,
+     "dark_share": 0.202,
+     "mean_radiance": 12.92,
      "moon": 0.955,
      "coverage": 1.0
     }
@@ -1017,133 +1025,6 @@
    ]
   },
   {
-   "place": "Kinshasa, DR Congo",
-   "city": "Kinshasa",
-   "country": "DR Congo",
-   "lon": 15.31,
-   "lat": -4.32,
-   "lit_pixels": 2384,
-   "normal_radiance": 16.71,
-   "mean_dark_share": 0.457,
-   "worst_dark_share": 1.0,
-   "mean_lit_share": 0.525,
-   "n": 14,
-   "series": [
-    {
-     "date": "20241031",
-     "lit_share": 0.137,
-     "dark_share": 0.97,
-     "mean_radiance": 1.71,
-     "moon": 0.97,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241129",
-     "lit_share": 0.796,
-     "dark_share": 0.148,
-     "mean_radiance": 14.84,
-     "moon": 0.952,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241229",
-     "lit_share": 0.207,
-     "dark_share": 0.894,
-     "mean_radiance": 2.64,
-     "moon": 0.968,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250127",
-     "lit_share": 0.601,
-     "dark_share": 0.308,
-     "mean_radiance": 9.13,
-     "moon": 0.95,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250226",
-     "lit_share": 0.12,
-     "dark_share": 0.993,
-     "mean_radiance": 1.58,
-     "moon": 0.966,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250327",
-     "lit_share": 0.796,
-     "dark_share": 0.166,
-     "mean_radiance": 15.34,
-     "moon": 0.948,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250426",
-     "lit_share": 0.627,
-     "dark_share": 0.225,
-     "mean_radiance": 9.81,
-     "moon": 0.964,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250525",
-     "lit_share": 0.086,
-     "dark_share": 1.0,
-     "mean_radiance": 1.09,
-     "moon": 0.946,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250624",
-     "lit_share": 0.559,
-     "dark_share": 0.461,
-     "mean_radiance": 8.88,
-     "moon": 0.962,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250723",
-     "lit_share": 0.748,
-     "dark_share": 0.098,
-     "mean_radiance": 11.93,
-     "moon": 0.944,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250822",
-     "lit_share": 0.89,
-     "dark_share": 0.012,
-     "mean_radiance": 15.07,
-     "moon": 0.959,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250920",
-     "lit_share": 0.112,
-     "dark_share": 1.0,
-     "mean_radiance": 1.46,
-     "moon": 0.942,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251020",
-     "lit_share": 0.907,
-     "dark_share": 0.011,
-     "mean_radiance": 16.69,
-     "moon": 0.957,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251218",
-     "lit_share": 0.765,
-     "dark_share": 0.112,
-     "mean_radiance": 11.49,
-     "moon": 0.955,
-     "coverage": 1.0
-    }
-   ]
-  },
-  {
    "place": "Gaborone, Botswana",
    "city": "Gaborone",
    "country": "Botswana",
@@ -1271,103 +1152,246 @@
    ]
   },
   {
-   "place": "Luanda, Angola",
-   "city": "Luanda",
-   "country": "Angola",
-   "lon": 13.23,
-   "lat": -8.84,
-   "lit_pixels": 2698,
-   "normal_radiance": 45.1,
-   "mean_dark_share": 0.426,
-   "worst_dark_share": 0.997,
-   "mean_lit_share": 0.591,
-   "n": 14,
+   "place": "Kinshasa, DR Congo",
+   "city": "Kinshasa",
+   "country": "DR Congo",
+   "lon": 15.31,
+   "lat": -4.32,
+   "lit_pixels": 2447,
+   "normal_radiance": 16.32,
+   "mean_dark_share": 0.439,
+   "worst_dark_share": 1.0,
+   "mean_lit_share": 0.536,
+   "n": 15,
    "series": [
     {
      "date": "20241031",
-     "lit_share": 0.255,
-     "dark_share": 0.975,
-     "mean_radiance": 10.01,
+     "lit_share": 0.141,
+     "dark_share": 0.969,
+     "mean_radiance": 1.72,
      "moon": 0.97,
      "coverage": 1.0
     },
     {
+     "date": "20241102",
+     "lit_share": 0.664,
+     "dark_share": 0.224,
+     "mean_radiance": 9.73,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
      "date": "20241129",
-     "lit_share": 0.785,
-     "dark_share": 0.114,
-     "mean_radiance": 36.48,
+     "lit_share": 0.791,
+     "dark_share": 0.157,
+     "mean_radiance": 14.56,
      "moon": 0.952,
      "coverage": 1.0
     },
     {
      "date": "20241229",
-     "lit_share": 0.591,
-     "dark_share": 0.423,
-     "mean_radiance": 22.55,
+     "lit_share": 0.214,
+     "dark_share": 0.881,
+     "mean_radiance": 2.65,
      "moon": 0.968,
      "coverage": 1.0
     },
     {
      "date": "20250127",
-     "lit_share": 0.726,
-     "dark_share": 0.079,
-     "mean_radiance": 33.73,
+     "lit_share": 0.607,
+     "dark_share": 0.303,
+     "mean_radiance": 9.03,
      "moon": 0.95,
      "coverage": 1.0
     },
     {
      "date": "20250226",
-     "lit_share": 0.876,
-     "dark_share": 0.059,
-     "mean_radiance": 42.0,
+     "lit_share": 0.124,
+     "dark_share": 0.992,
+     "mean_radiance": 1.58,
      "moon": 0.966,
      "coverage": 1.0
     },
     {
      "date": "20250327",
-     "lit_share": 0.467,
-     "dark_share": 0.667,
-     "mean_radiance": 18.41,
+     "lit_share": 0.789,
+     "dark_share": 0.173,
+     "mean_radiance": 15.04,
      "moon": 0.948,
      "coverage": 1.0
     },
     {
      "date": "20250426",
-     "lit_share": 0.882,
-     "dark_share": 0.072,
-     "mean_radiance": 41.6,
+     "lit_share": 0.632,
+     "dark_share": 0.211,
+     "mean_radiance": 9.69,
      "moon": 0.964,
      "coverage": 1.0
     },
     {
      "date": "20250525",
-     "lit_share": 0.595,
-     "dark_share": 0.444,
-     "mean_radiance": 25.61,
+     "lit_share": 0.087,
+     "dark_share": 1.0,
+     "mean_radiance": 1.08,
      "moon": 0.946,
      "coverage": 1.0
     },
     {
      "date": "20250624",
-     "lit_share": 0.431,
-     "dark_share": 0.69,
-     "mean_radiance": 17.99,
+     "lit_share": 0.563,
+     "dark_share": 0.446,
+     "mean_radiance": 8.76,
      "moon": 0.962,
      "coverage": 1.0
     },
     {
      "date": "20250723",
-     "lit_share": 0.28,
-     "dark_share": 0.924,
-     "mean_radiance": 10.43,
+     "lit_share": 0.748,
+     "dark_share": 0.104,
+     "mean_radiance": 11.73,
      "moon": 0.944,
      "coverage": 1.0
     },
     {
      "date": "20250822",
-     "lit_share": 0.836,
-     "dark_share": 0.03,
-     "mean_radiance": 38.07,
+     "lit_share": 0.891,
+     "dark_share": 0.013,
+     "mean_radiance": 14.83,
+     "moon": 0.959,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250920",
+     "lit_share": 0.114,
+     "dark_share": 1.0,
+     "mean_radiance": 1.45,
+     "moon": 0.942,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251020",
+     "lit_share": 0.904,
+     "dark_share": 0.012,
+     "mean_radiance": 16.4,
+     "moon": 0.957,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251218",
+     "lit_share": 0.772,
+     "dark_share": 0.104,
+     "mean_radiance": 11.37,
+     "moon": 0.955,
+     "coverage": 1.0
+    }
+   ]
+  },
+  {
+   "place": "Luanda, Angola",
+   "city": "Luanda",
+   "country": "Angola",
+   "lon": 13.23,
+   "lat": -8.84,
+   "lit_pixels": 2758,
+   "normal_radiance": 44.32,
+   "mean_dark_share": 0.413,
+   "worst_dark_share": 0.997,
+   "mean_lit_share": 0.596,
+   "n": 15,
+   "series": [
+    {
+     "date": "20241031",
+     "lit_share": 0.252,
+     "dark_share": 0.978,
+     "mean_radiance": 9.86,
+     "moon": 0.97,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241102",
+     "lit_share": 0.734,
+     "dark_share": 0.147,
+     "mean_radiance": 30.37,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241129",
+     "lit_share": 0.778,
+     "dark_share": 0.126,
+     "mean_radiance": 35.89,
+     "moon": 0.952,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241229",
+     "lit_share": 0.588,
+     "dark_share": 0.43,
+     "mean_radiance": 22.29,
+     "moon": 0.968,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250127",
+     "lit_share": 0.72,
+     "dark_share": 0.096,
+     "mean_radiance": 33.2,
+     "moon": 0.95,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250226",
+     "lit_share": 0.866,
+     "dark_share": 0.075,
+     "mean_radiance": 41.28,
+     "moon": 0.966,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250327",
+     "lit_share": 0.471,
+     "dark_share": 0.665,
+     "mean_radiance": 18.29,
+     "moon": 0.948,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250426",
+     "lit_share": 0.871,
+     "dark_share": 0.086,
+     "mean_radiance": 40.88,
+     "moon": 0.964,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250525",
+     "lit_share": 0.599,
+     "dark_share": 0.437,
+     "mean_radiance": 25.41,
+     "moon": 0.946,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250624",
+     "lit_share": 0.426,
+     "dark_share": 0.702,
+     "mean_radiance": 17.71,
+     "moon": 0.962,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250723",
+     "lit_share": 0.284,
+     "dark_share": 0.915,
+     "mean_radiance": 10.42,
+     "moon": 0.944,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250822",
+     "lit_share": 0.828,
+     "dark_share": 0.047,
+     "mean_radiance": 37.45,
      "moon": 0.959,
      "coverage": 1.0
     },
@@ -1375,23 +1399,23 @@
      "date": "20250920",
      "lit_share": 0.17,
      "dark_share": 0.997,
-     "mean_radiance": 6.49,
+     "mean_radiance": 6.47,
      "moon": 0.942,
-     "coverage": 0.812
+     "coverage": 0.804
     },
     {
      "date": "20251020",
-     "lit_share": 0.593,
-     "dark_share": 0.346,
-     "mean_radiance": 23.46,
+     "lit_share": 0.59,
+     "dark_share": 0.341,
+     "mean_radiance": 23.18,
      "moon": 0.957,
      "coverage": 1.0
     },
     {
      "date": "20251218",
-     "lit_share": 0.784,
-     "dark_share": 0.138,
-     "mean_radiance": 41.01,
+     "lit_share": 0.77,
+     "dark_share": 0.157,
+     "mean_radiance": 40.2,
      "moon": 0.955,
      "coverage": 1.0
     }
@@ -1657,122 +1681,130 @@
    "country": "Namibia",
    "lon": 17.08,
    "lat": -22.56,
-   "lit_pixels": 717,
-   "normal_radiance": 26.8,
-   "mean_dark_share": 0.403,
-   "worst_dark_share": 0.957,
-   "mean_lit_share": 0.594,
-   "n": 14,
+   "lit_pixels": 725,
+   "normal_radiance": 26.4,
+   "mean_dark_share": 0.395,
+   "worst_dark_share": 0.952,
+   "mean_lit_share": 0.598,
+   "n": 15,
    "series": [
     {
      "date": "20241031",
-     "lit_share": 0.893,
-     "dark_share": 0.082,
-     "mean_radiance": 27.85,
+     "lit_share": 0.891,
+     "dark_share": 0.081,
+     "mean_radiance": 27.61,
      "moon": 0.97,
      "coverage": 1.0
     },
     {
+     "date": "20241102",
+     "lit_share": 0.634,
+     "dark_share": 0.305,
+     "mean_radiance": 16.73,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
      "date": "20241129",
-     "lit_share": 0.648,
-     "dark_share": 0.258,
-     "mean_radiance": 18.07,
+     "lit_share": 0.653,
+     "dark_share": 0.247,
+     "mean_radiance": 17.94,
      "moon": 0.952,
      "coverage": 1.0
     },
     {
      "date": "20241229",
-     "lit_share": 0.432,
-     "dark_share": 0.679,
-     "mean_radiance": 11.28,
+     "lit_share": 0.435,
+     "dark_share": 0.674,
+     "mean_radiance": 11.19,
      "moon": 0.968,
      "coverage": 1.0
     },
     {
      "date": "20250127",
-     "lit_share": 0.23,
-     "dark_share": 0.957,
-     "mean_radiance": 5.23,
+     "lit_share": 0.233,
+     "dark_share": 0.952,
+     "mean_radiance": 5.2,
      "moon": 0.95,
      "coverage": 1.0
     },
     {
      "date": "20250226",
-     "lit_share": 0.681,
+     "lit_share": 0.683,
      "dark_share": 0.206,
-     "mean_radiance": 19.3,
+     "mean_radiance": 19.14,
      "moon": 0.966,
      "coverage": 1.0
     },
     {
      "date": "20250327",
-     "lit_share": 0.376,
-     "dark_share": 0.741,
-     "mean_radiance": 9.49,
+     "lit_share": 0.379,
+     "dark_share": 0.737,
+     "mean_radiance": 9.42,
      "moon": 0.948,
      "coverage": 1.0
     },
     {
      "date": "20250426",
-     "lit_share": 0.79,
-     "dark_share": 0.163,
-     "mean_radiance": 23.02,
+     "lit_share": 0.789,
+     "dark_share": 0.166,
+     "mean_radiance": 22.81,
      "moon": 0.964,
      "coverage": 1.0
     },
     {
      "date": "20250525",
-     "lit_share": 0.637,
-     "dark_share": 0.278,
-     "mean_radiance": 18.77,
+     "lit_share": 0.639,
+     "dark_share": 0.28,
+     "mean_radiance": 18.61,
      "moon": 0.946,
      "coverage": 1.0
     },
     {
      "date": "20250624",
-     "lit_share": 0.804,
-     "dark_share": 0.169,
-     "mean_radiance": 23.58,
+     "lit_share": 0.805,
+     "dark_share": 0.171,
+     "mean_radiance": 23.38,
      "moon": 0.962,
      "coverage": 1.0
     },
     {
      "date": "20250723",
-     "lit_share": 0.523,
-     "dark_share": 0.453,
-     "mean_radiance": 14.3,
+     "lit_share": 0.525,
+     "dark_share": 0.452,
+     "mean_radiance": 14.18,
      "moon": 0.944,
      "coverage": 1.0
     },
     {
      "date": "20250822",
-     "lit_share": 0.765,
-     "dark_share": 0.184,
-     "mean_radiance": 21.76,
+     "lit_share": 0.766,
+     "dark_share": 0.189,
+     "mean_radiance": 21.57,
      "moon": 0.959,
      "coverage": 1.0
     },
     {
      "date": "20250920",
-     "lit_share": 0.221,
-     "dark_share": 0.937,
-     "mean_radiance": 4.5,
+     "lit_share": 0.224,
+     "dark_share": 0.935,
+     "mean_radiance": 4.49,
      "moon": 0.942,
      "coverage": 1.0
     },
     {
      "date": "20251020",
-     "lit_share": 0.699,
-     "dark_share": 0.215,
-     "mean_radiance": 19.39,
+     "lit_share": 0.7,
+     "dark_share": 0.211,
+     "mean_radiance": 19.21,
      "moon": 0.957,
      "coverage": 1.0
     },
     {
      "date": "20251218",
-     "lit_share": 0.614,
-     "dark_share": 0.314,
-     "mean_radiance": 17.11,
+     "lit_share": 0.616,
+     "dark_share": 0.317,
+     "mean_radiance": 16.97,
      "moon": 0.955,
      "coverage": 1.0
     }
@@ -2033,6 +2065,141 @@
    ]
   },
   {
+   "place": "Dakar, Senegal",
+   "city": "Dakar",
+   "country": "Senegal",
+   "lon": -17.44,
+   "lat": 14.72,
+   "lit_pixels": 1055,
+   "normal_radiance": 33.52,
+   "mean_dark_share": 0.378,
+   "worst_dark_share": 1.0,
+   "mean_lit_share": 0.594,
+   "n": 15,
+   "series": [
+    {
+     "date": "20241031",
+     "lit_share": 0.676,
+     "dark_share": 0.254,
+     "mean_radiance": 24.38,
+     "moon": 0.97,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241102",
+     "lit_share": 0.464,
+     "dark_share": 0.541,
+     "mean_radiance": 13.33,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241129",
+     "lit_share": 0.807,
+     "dark_share": 0.091,
+     "mean_radiance": 28.81,
+     "moon": 0.952,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241229",
+     "lit_share": 0.747,
+     "dark_share": 0.207,
+     "mean_radiance": 27.37,
+     "moon": 0.968,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250127",
+     "lit_share": 0.691,
+     "dark_share": 0.16,
+     "mean_radiance": 23.07,
+     "moon": 0.95,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250226",
+     "lit_share": 0.784,
+     "dark_share": 0.15,
+     "mean_radiance": 32.78,
+     "moon": 0.966,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250327",
+     "lit_share": 0.841,
+     "dark_share": 0.105,
+     "mean_radiance": 30.29,
+     "moon": 0.948,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250426",
+     "lit_share": 0.778,
+     "dark_share": 0.088,
+     "mean_radiance": 25.28,
+     "moon": 0.964,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250525",
+     "lit_share": 0.138,
+     "dark_share": 0.962,
+     "mean_radiance": 3.38,
+     "moon": 0.946,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250624",
+     "lit_share": 0.39,
+     "dark_share": 0.767,
+     "mean_radiance": 10.26,
+     "moon": 0.962,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250723",
+     "lit_share": 0.759,
+     "dark_share": 0.109,
+     "mean_radiance": 25.8,
+     "moon": 0.944,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250822",
+     "lit_share": 0.023,
+     "dark_share": 1.0,
+     "mean_radiance": 0.56,
+     "moon": 0.959,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250920",
+     "lit_share": 0.749,
+     "dark_share": 0.194,
+     "mean_radiance": 26.95,
+     "moon": 0.942,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251020",
+     "lit_share": 0.83,
+     "dark_share": 0.076,
+     "mean_radiance": 29.2,
+     "moon": 0.957,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251218",
+     "lit_share": 0.237,
+     "dark_share": 0.963,
+     "mean_radiance": 7.46,
+     "moon": 0.955,
+     "coverage": 1.0
+    }
+   ]
+  },
+  {
    "place": "Maputo, Mozambique",
    "city": "Maputo",
    "country": "Mozambique",
@@ -2154,133 +2321,6 @@
      "lit_share": 0.274,
      "dark_share": 0.927,
      "mean_radiance": 7.05,
-     "moon": 0.955,
-     "coverage": 1.0
-    }
-   ]
-  },
-  {
-   "place": "Dakar, Senegal",
-   "city": "Dakar",
-   "country": "Senegal",
-   "lon": -17.44,
-   "lat": 14.72,
-   "lit_pixels": 1054,
-   "normal_radiance": 33.86,
-   "mean_dark_share": 0.37,
-   "worst_dark_share": 1.0,
-   "mean_lit_share": 0.6,
-   "n": 14,
-   "series": [
-    {
-     "date": "20241031",
-     "lit_share": 0.671,
-     "dark_share": 0.258,
-     "mean_radiance": 24.39,
-     "moon": 0.97,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241129",
-     "lit_share": 0.802,
-     "dark_share": 0.098,
-     "mean_radiance": 28.82,
-     "moon": 0.952,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241229",
-     "lit_share": 0.745,
-     "dark_share": 0.211,
-     "mean_radiance": 27.41,
-     "moon": 0.968,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250127",
-     "lit_share": 0.685,
-     "dark_share": 0.165,
-     "mean_radiance": 23.08,
-     "moon": 0.95,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250226",
-     "lit_share": 0.781,
-     "dark_share": 0.151,
-     "mean_radiance": 32.82,
-     "moon": 0.966,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250327",
-     "lit_share": 0.836,
-     "dark_share": 0.108,
-     "mean_radiance": 30.29,
-     "moon": 0.948,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250426",
-     "lit_share": 0.771,
-     "dark_share": 0.093,
-     "mean_radiance": 25.28,
-     "moon": 0.964,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250525",
-     "lit_share": 0.137,
-     "dark_share": 0.961,
-     "mean_radiance": 3.38,
-     "moon": 0.946,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250624",
-     "lit_share": 0.385,
-     "dark_share": 0.775,
-     "mean_radiance": 10.25,
-     "moon": 0.962,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250723",
-     "lit_share": 0.753,
-     "dark_share": 0.115,
-     "mean_radiance": 25.82,
-     "moon": 0.944,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250822",
-     "lit_share": 0.022,
-     "dark_share": 1.0,
-     "mean_radiance": 0.56,
-     "moon": 0.959,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250920",
-     "lit_share": 0.746,
-     "dark_share": 0.198,
-     "mean_radiance": 26.99,
-     "moon": 0.942,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251020",
-     "lit_share": 0.825,
-     "dark_share": 0.08,
-     "mean_radiance": 29.22,
-     "moon": 0.957,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251218",
-     "lit_share": 0.234,
-     "dark_share": 0.966,
-     "mean_radiance": 7.46,
      "moon": 0.955,
      "coverage": 1.0
     }
@@ -2541,381 +2581,270 @@
    ]
   },
   {
-   "place": "Abidjan, Ivory Coast",
-   "city": "Abidjan",
-   "country": "Ivory Coast",
-   "lon": -4.02,
-   "lat": 5.36,
-   "lit_pixels": 2492,
-   "normal_radiance": 36.05,
-   "mean_dark_share": 0.319,
-   "worst_dark_share": 0.801,
-   "mean_lit_share": 0.651,
-   "n": 14,
+   "place": "Lagos, Nigeria",
+   "city": "Lagos",
+   "country": "Nigeria",
+   "lon": 3.38,
+   "lat": 6.52,
+   "lit_pixels": 2805,
+   "normal_radiance": 26.59,
+   "mean_dark_share": 0.322,
+   "worst_dark_share": 1.0,
+   "mean_lit_share": 0.617,
+   "n": 15,
    "series": [
     {
      "date": "20241031",
-     "lit_share": 0.732,
-     "dark_share": 0.198,
-     "mean_radiance": 28.33,
+     "lit_share": 0.663,
+     "dark_share": 0.155,
+     "mean_radiance": 17.64,
      "moon": 0.97,
      "coverage": 1.0
     },
     {
+     "date": "20241102",
+     "lit_share": 0.663,
+     "dark_share": 0.361,
+     "mean_radiance": 18.12,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
      "date": "20241129",
-     "lit_share": 0.73,
-     "dark_share": 0.2,
-     "mean_radiance": 27.91,
+     "lit_share": 0.891,
+     "dark_share": 0.026,
+     "mean_radiance": 24.4,
      "moon": 0.952,
      "coverage": 1.0
     },
     {
      "date": "20241229",
-     "lit_share": 0.74,
-     "dark_share": 0.077,
-     "mean_radiance": 25.86,
+     "lit_share": 0.713,
+     "dark_share": 0.11,
+     "mean_radiance": 19.02,
      "moon": 0.968,
      "coverage": 1.0
     },
     {
      "date": "20250127",
-     "lit_share": 0.722,
-     "dark_share": 0.155,
-     "mean_radiance": 27.63,
+     "lit_share": 0.698,
+     "dark_share": 0.17,
+     "mean_radiance": 18.32,
      "moon": 0.95,
      "coverage": 1.0
     },
     {
      "date": "20250226",
-     "lit_share": 0.598,
-     "dark_share": 0.31,
-     "mean_radiance": 20.3,
+     "lit_share": 0.591,
+     "dark_share": 0.281,
+     "mean_radiance": 14.47,
      "moon": 0.966,
      "coverage": 1.0
     },
     {
      "date": "20250327",
-     "lit_share": 0.658,
-     "dark_share": 0.244,
-     "mean_radiance": 21.44,
+     "lit_share": 0.545,
+     "dark_share": 0.446,
+     "mean_radiance": 14.43,
      "moon": 0.948,
      "coverage": 1.0
     },
     {
      "date": "20250426",
-     "lit_share": 0.792,
-     "dark_share": 0.102,
-     "mean_radiance": 28.67,
+     "lit_share": 0.35,
+     "dark_share": 0.766,
+     "mean_radiance": 7.66,
      "moon": 0.964,
      "coverage": 1.0
     },
     {
      "date": "20250525",
-     "lit_share": 0.456,
-     "dark_share": 0.646,
-     "mean_radiance": 13.62,
+     "lit_share": 0.645,
+     "dark_share": 0.188,
+     "mean_radiance": 17.14,
      "moon": 0.946,
      "coverage": 1.0
     },
     {
      "date": "20250624",
-     "lit_share": 0.849,
-     "dark_share": 0.088,
-     "mean_radiance": 33.2,
+     "lit_share": 0.924,
+     "dark_share": 0.032,
+     "mean_radiance": 27.21,
      "moon": 0.962,
      "coverage": 1.0
     },
     {
      "date": "20250723",
-     "lit_share": 0.42,
-     "dark_share": 0.722,
-     "mean_radiance": 13.28,
+     "lit_share": 0.66,
+     "dark_share": 0.121,
+     "mean_radiance": 16.92,
      "moon": 0.944,
      "coverage": 1.0
     },
     {
      "date": "20250822",
-     "lit_share": 0.445,
-     "dark_share": 0.656,
-     "mean_radiance": 13.68,
+     "lit_share": 0.221,
+     "dark_share": 0.961,
+     "mean_radiance": 4.97,
      "moon": 0.959,
      "coverage": 1.0
     },
     {
      "date": "20250920",
-     "lit_share": 0.747,
-     "dark_share": 0.154,
-     "mean_radiance": 26.2,
+     "lit_share": 0.66,
+     "dark_share": 0.174,
+     "mean_radiance": 17.89,
      "moon": 0.942,
      "coverage": 1.0
     },
     {
      "date": "20251020",
-     "lit_share": 0.366,
-     "dark_share": 0.801,
-     "mean_radiance": 11.07,
+     "lit_share": 0.153,
+     "dark_share": 1.0,
+     "mean_radiance": 3.18,
+     "moon": 0.957,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251218",
+     "lit_share": 0.885,
+     "dark_share": 0.043,
+     "mean_radiance": 26.5,
+     "moon": 0.955,
+     "coverage": 1.0
+    }
+   ]
+  },
+  {
+   "place": "Abidjan, Ivory Coast",
+   "city": "Abidjan",
+   "country": "Ivory Coast",
+   "lon": -4.02,
+   "lat": 5.36,
+   "lit_pixels": 2513,
+   "normal_radiance": 35.56,
+   "mean_dark_share": 0.31,
+   "worst_dark_share": 0.793,
+   "mean_lit_share": 0.653,
+   "n": 15,
+   "series": [
+    {
+     "date": "20241031",
+     "lit_share": 0.733,
+     "dark_share": 0.195,
+     "mean_radiance": 28.15,
+     "moon": 0.97,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241102",
+     "lit_share": 0.647,
+     "dark_share": 0.247,
+     "mean_radiance": 22.51,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241129",
+     "lit_share": 0.731,
+     "dark_share": 0.199,
+     "mean_radiance": 27.73,
+     "moon": 0.952,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241229",
+     "lit_share": 0.742,
+     "dark_share": 0.075,
+     "mean_radiance": 25.71,
+     "moon": 0.968,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250127",
+     "lit_share": 0.726,
+     "dark_share": 0.152,
+     "mean_radiance": 27.49,
+     "moon": 0.95,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250226",
+     "lit_share": 0.601,
+     "dark_share": 0.308,
+     "mean_radiance": 20.2,
+     "moon": 0.966,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250327",
+     "lit_share": 0.662,
+     "dark_share": 0.242,
+     "mean_radiance": 21.34,
+     "moon": 0.948,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250426",
+     "lit_share": 0.796,
+     "dark_share": 0.099,
+     "mean_radiance": 28.51,
+     "moon": 0.964,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250525",
+     "lit_share": 0.461,
+     "dark_share": 0.635,
+     "mean_radiance": 13.59,
+     "moon": 0.946,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250624",
+     "lit_share": 0.85,
+     "dark_share": 0.087,
+     "mean_radiance": 33.01,
+     "moon": 0.962,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250723",
+     "lit_share": 0.423,
+     "dark_share": 0.714,
+     "mean_radiance": 13.23,
+     "moon": 0.944,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250822",
+     "lit_share": 0.448,
+     "dark_share": 0.646,
+     "mean_radiance": 13.62,
+     "moon": 0.959,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250920",
+     "lit_share": 0.75,
+     "dark_share": 0.149,
+     "mean_radiance": 26.05,
+     "moon": 0.942,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251020",
+     "lit_share": 0.37,
+     "dark_share": 0.793,
+     "mean_radiance": 11.05,
      "moon": 0.957,
      "coverage": 1.0
     },
     {
      "date": "20251218",
      "lit_share": 0.853,
-     "dark_share": 0.107,
-     "mean_radiance": 37.83,
-     "moon": 0.955,
-     "coverage": 1.0
-    }
-   ]
-  },
-  {
-   "place": "Lagos, Nigeria",
-   "city": "Lagos",
-   "country": "Nigeria",
-   "lon": 3.38,
-   "lat": 6.52,
-   "lit_pixels": 2822,
-   "normal_radiance": 25.94,
-   "mean_dark_share": 0.306,
-   "worst_dark_share": 1.0,
-   "mean_lit_share": 0.626,
-   "n": 14,
-   "series": [
-    {
-     "date": "20241031",
-     "lit_share": 0.678,
-     "dark_share": 0.142,
-     "mean_radiance": 17.58,
-     "moon": 0.97,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241129",
-     "lit_share": 0.905,
-     "dark_share": 0.023,
-     "mean_radiance": 24.31,
-     "moon": 0.952,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241229",
-     "lit_share": 0.728,
-     "dark_share": 0.096,
-     "mean_radiance": 18.96,
-     "moon": 0.968,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250127",
-     "lit_share": 0.713,
-     "dark_share": 0.162,
-     "mean_radiance": 18.27,
-     "moon": 0.95,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250226",
-     "lit_share": 0.605,
-     "dark_share": 0.253,
-     "mean_radiance": 14.43,
-     "moon": 0.966,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250327",
-     "lit_share": 0.56,
-     "dark_share": 0.399,
-     "mean_radiance": 14.43,
-     "moon": 0.948,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250426",
-     "lit_share": 0.358,
-     "dark_share": 0.747,
-     "mean_radiance": 7.61,
-     "moon": 0.964,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250525",
-     "lit_share": 0.661,
-     "dark_share": 0.16,
-     "mean_radiance": 17.1,
-     "moon": 0.946,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250624",
-     "lit_share": 0.933,
-     "dark_share": 0.028,
-     "mean_radiance": 27.12,
-     "moon": 0.962,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250723",
-     "lit_share": 0.675,
-     "dark_share": 0.119,
-     "mean_radiance": 16.86,
-     "moon": 0.944,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250822",
-     "lit_share": 0.227,
-     "dark_share": 0.955,
-     "mean_radiance": 4.93,
-     "moon": 0.959,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250920",
-     "lit_share": 0.673,
-     "dark_share": 0.162,
-     "mean_radiance": 17.82,
-     "moon": 0.942,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251020",
-     "lit_share": 0.157,
-     "dark_share": 1.0,
-     "mean_radiance": 3.16,
-     "moon": 0.957,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251218",
-     "lit_share": 0.897,
-     "dark_share": 0.037,
-     "mean_radiance": 26.4,
-     "moon": 0.955,
-     "coverage": 1.0
-    }
-   ]
-  },
-  {
-   "place": "Accra, Ghana",
-   "city": "Accra",
-   "country": "Ghana",
-   "lon": -0.19,
-   "lat": 5.6,
-   "lit_pixels": 3723,
-   "normal_radiance": 50.41,
-   "mean_dark_share": 0.269,
-   "worst_dark_share": 0.98,
-   "mean_lit_share": 0.688,
-   "n": 14,
-   "series": [
-    {
-     "date": "20241031",
-     "lit_share": 0.851,
-     "dark_share": 0.071,
-     "mean_radiance": 44.94,
-     "moon": 0.97,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241129",
-     "lit_share": 0.842,
-     "dark_share": 0.058,
-     "mean_radiance": 43.64,
-     "moon": 0.952,
-     "coverage": 1.0
-    },
-    {
-     "date": "20241229",
-     "lit_share": 0.866,
-     "dark_share": 0.021,
-     "mean_radiance": 44.3,
-     "moon": 0.968,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250127",
-     "lit_share": 0.817,
-     "dark_share": 0.023,
-     "mean_radiance": 41.76,
-     "moon": 0.95,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250226",
-     "lit_share": 0.806,
-     "dark_share": 0.014,
-     "mean_radiance": 39.81,
-     "moon": 0.966,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250327",
-     "lit_share": 0.365,
-     "dark_share": 0.834,
-     "mean_radiance": 16.36,
-     "moon": 0.948,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250426",
-     "lit_share": 0.517,
-     "dark_share": 0.496,
-     "mean_radiance": 24.85,
-     "moon": 0.964,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250525",
-     "lit_share": 0.716,
-     "dark_share": 0.048,
-     "mean_radiance": 36.06,
-     "moon": 0.946,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250624",
-     "lit_share": 0.897,
-     "dark_share": 0.022,
-     "mean_radiance": 53.94,
-     "moon": 0.962,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250723",
-     "lit_share": 0.258,
-     "dark_share": 0.98,
-     "mean_radiance": 12.22,
-     "moon": 0.944,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250822",
-     "lit_share": 0.404,
-     "dark_share": 0.723,
-     "mean_radiance": 18.68,
-     "moon": 0.959,
-     "coverage": 1.0
-    },
-    {
-     "date": "20250920",
-     "lit_share": 0.757,
-     "dark_share": 0.113,
-     "mean_radiance": 39.53,
-     "moon": 0.942,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251020",
-     "lit_share": 0.6,
-     "dark_share": 0.332,
-     "mean_radiance": 28.32,
-     "moon": 0.957,
-     "coverage": 1.0
-    },
-    {
-     "date": "20251218",
-     "lit_share": 0.935,
-     "dark_share": 0.03,
-     "mean_radiance": 50.75,
+     "dark_share": 0.108,
+     "mean_radiance": 37.59,
      "moon": 0.955,
      "coverage": 1.0
     }
@@ -2927,122 +2856,265 @@
    "country": "South Africa",
    "lon": 18.42,
    "lat": -33.92,
-   "lit_pixels": 1806,
-   "normal_radiance": 48.08,
-   "mean_dark_share": 0.257,
-   "worst_dark_share": 0.79,
-   "mean_lit_share": 0.668,
-   "n": 14,
+   "lit_pixels": 1803,
+   "normal_radiance": 47.6,
+   "mean_dark_share": 0.29,
+   "worst_dark_share": 0.835,
+   "mean_lit_share": 0.652,
+   "n": 15,
    "series": [
     {
      "date": "20241031",
-     "lit_share": 0.748,
-     "dark_share": 0.127,
-     "mean_radiance": 35.98,
+     "lit_share": 0.754,
+     "dark_share": 0.123,
+     "mean_radiance": 36.03,
      "moon": 0.97,
      "coverage": 1.0
     },
     {
+     "date": "20241102",
+     "lit_share": 0.358,
+     "dark_share": 0.835,
+     "mean_radiance": 14.8,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
      "date": "20241129",
-     "lit_share": 0.759,
-     "dark_share": 0.127,
-     "mean_radiance": 36.56,
+     "lit_share": 0.765,
+     "dark_share": 0.122,
+     "mean_radiance": 36.61,
      "moon": 0.952,
      "coverage": 1.0
     },
     {
      "date": "20241229",
-     "lit_share": 0.754,
-     "dark_share": 0.128,
-     "mean_radiance": 37.48,
+     "lit_share": 0.761,
+     "dark_share": 0.123,
+     "mean_radiance": 37.53,
      "moon": 0.968,
      "coverage": 1.0
     },
     {
      "date": "20250127",
-     "lit_share": 0.706,
-     "dark_share": 0.159,
-     "mean_radiance": 33.83,
+     "lit_share": 0.712,
+     "dark_share": 0.153,
+     "mean_radiance": 33.88,
      "moon": 0.95,
      "coverage": 1.0
     },
     {
      "date": "20250226",
-     "lit_share": 0.813,
-     "dark_share": 0.096,
-     "mean_radiance": 39.35,
+     "lit_share": 0.819,
+     "dark_share": 0.092,
+     "mean_radiance": 39.4,
      "moon": 0.966,
      "coverage": 1.0
     },
     {
      "date": "20250327",
-     "lit_share": 0.583,
-     "dark_share": 0.291,
-     "mean_radiance": 27.02,
+     "lit_share": 0.589,
+     "dark_share": 0.279,
+     "mean_radiance": 27.06,
      "moon": 0.948,
      "coverage": 1.0
     },
     {
      "date": "20250426",
-     "lit_share": 0.895,
-     "dark_share": 0.064,
-     "mean_radiance": 48.73,
+     "lit_share": 0.898,
+     "dark_share": 0.063,
+     "mean_radiance": 48.78,
      "moon": 0.964,
      "coverage": 1.0
     },
     {
      "date": "20250525",
-     "lit_share": 0.638,
-     "dark_share": 0.232,
-     "mean_radiance": 30.02,
+     "lit_share": 0.644,
+     "dark_share": 0.225,
+     "mean_radiance": 30.06,
      "moon": 0.946,
      "coverage": 1.0
     },
     {
      "date": "20250624",
-     "lit_share": 0.371,
-     "dark_share": 0.755,
-     "mean_radiance": 16.35,
+     "lit_share": 0.375,
+     "dark_share": 0.748,
+     "mean_radiance": 16.37,
      "moon": 0.962,
      "coverage": 1.0
     },
     {
      "date": "20250723",
-     "lit_share": 0.581,
-     "dark_share": 0.329,
-     "mean_radiance": 28.34,
+     "lit_share": 0.586,
+     "dark_share": 0.316,
+     "mean_radiance": 28.38,
      "moon": 0.944,
      "coverage": 1.0
     },
     {
      "date": "20250822",
-     "lit_share": 0.289,
-     "dark_share": 0.79,
-     "mean_radiance": 11.75,
+     "lit_share": 0.293,
+     "dark_share": 0.786,
+     "mean_radiance": 11.78,
      "moon": 0.959,
      "coverage": 1.0
     },
     {
      "date": "20250920",
-     "lit_share": 0.582,
-     "dark_share": 0.327,
-     "mean_radiance": 27.62,
+     "lit_share": 0.587,
+     "dark_share": 0.312,
+     "mean_radiance": 27.64,
      "moon": 0.942,
      "coverage": 1.0
     },
     {
      "date": "20251020",
-     "lit_share": 0.845,
-     "dark_share": 0.079,
-     "mean_radiance": 42.74,
+     "lit_share": 0.849,
+     "dark_share": 0.078,
+     "mean_radiance": 42.78,
      "moon": 0.957,
      "coverage": 1.0
     },
     {
      "date": "20251218",
-     "lit_share": 0.784,
-     "dark_share": 0.098,
-     "mean_radiance": 39.1,
+     "lit_share": 0.79,
+     "dark_share": 0.095,
+     "mean_radiance": 39.15,
+     "moon": 0.955,
+     "coverage": 1.0
+    }
+   ]
+  },
+  {
+   "place": "Accra, Ghana",
+   "city": "Accra",
+   "country": "Ghana",
+   "lon": -0.19,
+   "lat": 5.6,
+   "lit_pixels": 3693,
+   "normal_radiance": 51.63,
+   "mean_dark_share": 0.257,
+   "worst_dark_share": 0.98,
+   "mean_lit_share": 0.692,
+   "n": 15,
+   "series": [
+    {
+     "date": "20241031",
+     "lit_share": 0.843,
+     "dark_share": 0.064,
+     "mean_radiance": 45.26,
+     "moon": 0.97,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241102",
+     "lit_share": 0.866,
+     "dark_share": 0.045,
+     "mean_radiance": 47.35,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241129",
+     "lit_share": 0.834,
+     "dark_share": 0.051,
+     "mean_radiance": 43.95,
+     "moon": 0.952,
+     "coverage": 1.0
+    },
+    {
+     "date": "20241229",
+     "lit_share": 0.856,
+     "dark_share": 0.02,
+     "mean_radiance": 44.6,
+     "moon": 0.968,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250127",
+     "lit_share": 0.807,
+     "dark_share": 0.018,
+     "mean_radiance": 42.04,
+     "moon": 0.95,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250226",
+     "lit_share": 0.795,
+     "dark_share": 0.014,
+     "mean_radiance": 40.06,
+     "moon": 0.966,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250327",
+     "lit_share": 0.355,
+     "dark_share": 0.844,
+     "mean_radiance": 16.38,
+     "moon": 0.948,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250426",
+     "lit_share": 0.51,
+     "dark_share": 0.516,
+     "mean_radiance": 24.99,
+     "moon": 0.964,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250525",
+     "lit_share": 0.706,
+     "dark_share": 0.047,
+     "mean_radiance": 36.28,
+     "moon": 0.946,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250624",
+     "lit_share": 0.893,
+     "dark_share": 0.022,
+     "mean_radiance": 54.31,
+     "moon": 0.962,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250723",
+     "lit_share": 0.254,
+     "dark_share": 0.98,
+     "mean_radiance": 12.28,
+     "moon": 0.944,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250822",
+     "lit_share": 0.395,
+     "dark_share": 0.738,
+     "mean_radiance": 18.75,
+     "moon": 0.959,
+     "coverage": 1.0
+    },
+    {
+     "date": "20250920",
+     "lit_share": 0.75,
+     "dark_share": 0.109,
+     "mean_radiance": 39.81,
+     "moon": 0.942,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251020",
+     "lit_share": 0.588,
+     "dark_share": 0.36,
+     "mean_radiance": 28.42,
+     "moon": 0.957,
+     "coverage": 1.0
+    },
+    {
+     "date": "20251218",
+     "lit_share": 0.932,
+     "dark_share": 0.024,
+     "mean_radiance": 51.11,
      "moon": 0.955,
      "coverage": 1.0
     }
@@ -3054,122 +3126,130 @@
    "country": "Morocco",
    "lon": -7.59,
    "lat": 33.57,
-   "lit_pixels": 2127,
-   "normal_radiance": 69.1,
-   "mean_dark_share": 0.242,
-   "worst_dark_share": 0.811,
+   "lit_pixels": 2135,
+   "normal_radiance": 69.01,
+   "mean_dark_share": 0.239,
+   "worst_dark_share": 0.81,
    "mean_lit_share": 0.69,
-   "n": 14,
+   "n": 15,
    "series": [
     {
      "date": "20241031",
      "lit_share": 0.516,
-     "dark_share": 0.474,
-     "mean_radiance": 35.59,
+     "dark_share": 0.475,
+     "mean_radiance": 35.53,
      "moon": 0.97,
      "coverage": 1.0
     },
     {
+     "date": "20241102",
+     "lit_share": 0.719,
+     "dark_share": 0.193,
+     "mean_radiance": 52.54,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
      "date": "20241129",
-     "lit_share": 0.725,
-     "dark_share": 0.141,
-     "mean_radiance": 50.61,
+     "lit_share": 0.724,
+     "dark_share": 0.139,
+     "mean_radiance": 50.5,
      "moon": 0.952,
      "coverage": 1.0
     },
     {
      "date": "20241229",
-     "lit_share": 0.677,
-     "dark_share": 0.224,
-     "mean_radiance": 48.8,
+     "lit_share": 0.676,
+     "dark_share": 0.222,
+     "mean_radiance": 48.67,
      "moon": 0.968,
      "coverage": 1.0
     },
     {
      "date": "20250127",
-     "lit_share": 0.544,
-     "dark_share": 0.406,
-     "mean_radiance": 36.23,
+     "lit_share": 0.543,
+     "dark_share": 0.407,
+     "mean_radiance": 36.14,
      "moon": 0.95,
      "coverage": 1.0
     },
     {
      "date": "20250226",
-     "lit_share": 0.74,
-     "dark_share": 0.17,
-     "mean_radiance": 55.39,
+     "lit_share": 0.738,
+     "dark_share": 0.173,
+     "mean_radiance": 55.22,
      "moon": 0.966,
      "coverage": 1.0
     },
     {
      "date": "20250327",
-     "lit_share": 0.868,
-     "dark_share": 0.073,
-     "mean_radiance": 66.66,
+     "lit_share": 0.866,
+     "dark_share": 0.076,
+     "mean_radiance": 66.46,
      "moon": 0.948,
      "coverage": 1.0
     },
     {
      "date": "20250426",
      "lit_share": 0.391,
-     "dark_share": 0.811,
-     "mean_radiance": 25.01,
+     "dark_share": 0.81,
+     "mean_radiance": 24.96,
      "moon": 0.964,
      "coverage": 1.0
     },
     {
      "date": "20250525",
-     "lit_share": 0.87,
-     "dark_share": 0.061,
-     "mean_radiance": 63.28,
+     "lit_share": 0.867,
+     "dark_share": 0.062,
+     "mean_radiance": 63.1,
      "moon": 0.946,
      "coverage": 1.0
     },
     {
      "date": "20250624",
-     "lit_share": 0.691,
-     "dark_share": 0.159,
-     "mean_radiance": 47.62,
+     "lit_share": 0.69,
+     "dark_share": 0.158,
+     "mean_radiance": 47.5,
      "moon": 0.962,
      "coverage": 1.0
     },
     {
      "date": "20250723",
-     "lit_share": 0.846,
+     "lit_share": 0.844,
      "dark_share": 0.055,
-     "mean_radiance": 60.29,
+     "mean_radiance": 60.15,
      "moon": 0.944,
      "coverage": 1.0
     },
     {
      "date": "20250822",
-     "lit_share": 0.774,
-     "dark_share": 0.109,
-     "mean_radiance": 55.17,
+     "lit_share": 0.772,
+     "dark_share": 0.11,
+     "mean_radiance": 55.04,
      "moon": 0.959,
      "coverage": 1.0
     },
     {
      "date": "20250920",
-     "lit_share": 0.701,
-     "dark_share": 0.139,
-     "mean_radiance": 46.5,
+     "lit_share": 0.7,
+     "dark_share": 0.142,
+     "mean_radiance": 46.39,
      "moon": 0.942,
      "coverage": 1.0
     },
     {
      "date": "20251020",
-     "lit_share": 0.553,
-     "dark_share": 0.419,
-     "mean_radiance": 39.07,
+     "lit_share": 0.552,
+     "dark_share": 0.422,
+     "mean_radiance": 38.97,
      "moon": 0.957,
      "coverage": 1.0
     },
     {
      "date": "20251218",
-     "lit_share": 0.76,
-     "dark_share": 0.144,
-     "mean_radiance": 55.77,
+     "lit_share": 0.758,
+     "dark_share": 0.148,
+     "mean_radiance": 55.61,
      "moon": 0.955,
      "coverage": 1.0
     }
@@ -3181,122 +3261,130 @@
    "country": "Egypt",
    "lon": 31.24,
    "lat": 30.04,
-   "lit_pixels": 4093,
-   "normal_radiance": 80.19,
+   "lit_pixels": 4120,
+   "normal_radiance": 79.28,
    "mean_dark_share": 0.138,
-   "worst_dark_share": 0.289,
-   "mean_lit_share": 0.732,
-   "n": 14,
+   "worst_dark_share": 0.288,
+   "mean_lit_share": 0.73,
+   "n": 15,
    "series": [
     {
      "date": "20241031",
-     "lit_share": 0.853,
-     "dark_share": 0.059,
-     "mean_radiance": 71.7,
+     "lit_share": 0.852,
+     "dark_share": 0.063,
+     "mean_radiance": 71.29,
      "moon": 0.97,
      "coverage": 1.0
     },
     {
+     "date": "20241102",
+     "lit_share": 0.673,
+     "dark_share": 0.146,
+     "mean_radiance": 52.34,
+     "moon": 0.038,
+     "coverage": 1.0
+    },
+    {
      "date": "20241129",
-     "lit_share": 0.681,
-     "dark_share": 0.184,
-     "mean_radiance": 56.09,
+     "lit_share": 0.683,
+     "dark_share": 0.185,
+     "mean_radiance": 55.79,
      "moon": 0.952,
      "coverage": 1.0
     },
     {
      "date": "20241229",
-     "lit_share": 0.889,
-     "dark_share": 0.04,
-     "mean_radiance": 78.5,
+     "lit_share": 0.887,
+     "dark_share": 0.046,
+     "mean_radiance": 78.06,
      "moon": 0.968,
      "coverage": 1.0
     },
     {
      "date": "20250127",
-     "lit_share": 0.607,
-     "dark_share": 0.289,
-     "mean_radiance": 50.76,
+     "lit_share": 0.609,
+     "dark_share": 0.288,
+     "mean_radiance": 50.5,
      "moon": 0.95,
      "coverage": 1.0
     },
     {
      "date": "20250226",
-     "lit_share": 0.693,
-     "dark_share": 0.14,
-     "mean_radiance": 52.87,
+     "lit_share": 0.699,
+     "dark_share": 0.131,
+     "mean_radiance": 52.73,
      "moon": 0.966,
      "coverage": 1.0
     },
     {
      "date": "20250327",
-     "lit_share": 0.809,
-     "dark_share": 0.071,
-     "mean_radiance": 68.89,
+     "lit_share": 0.813,
+     "dark_share": 0.067,
+     "mean_radiance": 68.6,
      "moon": 0.948,
      "coverage": 1.0
     },
     {
      "date": "20250426",
-     "lit_share": 0.802,
+     "lit_share": 0.804,
      "dark_share": 0.054,
-     "mean_radiance": 64.96,
+     "mean_radiance": 64.64,
      "moon": 0.964,
      "coverage": 1.0
     },
     {
      "date": "20250525",
-     "lit_share": 0.688,
-     "dark_share": 0.175,
-     "mean_radiance": 56.84,
+     "lit_share": 0.69,
+     "dark_share": 0.173,
+     "mean_radiance": 56.55,
      "moon": 0.946,
      "coverage": 1.0
     },
     {
      "date": "20250624",
-     "lit_share": 0.716,
-     "dark_share": 0.113,
-     "mean_radiance": 56.22,
+     "lit_share": 0.719,
+     "dark_share": 0.111,
+     "mean_radiance": 55.95,
      "moon": 0.962,
      "coverage": 1.0
     },
     {
      "date": "20250723",
-     "lit_share": 0.652,
-     "dark_share": 0.233,
-     "mean_radiance": 54.57,
+     "lit_share": 0.653,
+     "dark_share": 0.235,
+     "mean_radiance": 54.26,
      "moon": 0.944,
      "coverage": 1.0
     },
     {
      "date": "20250822",
-     "lit_share": 0.724,
-     "dark_share": 0.117,
-     "mean_radiance": 57.97,
+     "lit_share": 0.727,
+     "dark_share": 0.112,
+     "mean_radiance": 57.69,
      "moon": 0.959,
      "coverage": 0.992
     },
     {
      "date": "20250920",
      "lit_share": 0.705,
-     "dark_share": 0.174,
-     "mean_radiance": 58.86,
+     "dark_share": 0.175,
+     "mean_radiance": 58.52,
      "moon": 0.942,
      "coverage": 1.0
     },
     {
      "date": "20251020",
-     "lit_share": 0.727,
-     "dark_share": 0.123,
-     "mean_radiance": 59.42,
+     "lit_share": 0.728,
+     "dark_share": 0.125,
+     "mean_radiance": 59.09,
      "moon": 0.957,
      "coverage": 1.0
     },
     {
      "date": "20251218",
-     "lit_share": 0.708,
-     "dark_share": 0.158,
-     "mean_radiance": 59.26,
+     "lit_share": 0.709,
+     "dark_share": 0.16,
+     "mean_radiance": 58.92,
      "moon": 0.955,
      "coverage": 1.0
     }
